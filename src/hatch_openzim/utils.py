@@ -6,7 +6,9 @@ from typing import List
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 
-REMOTE_REGEXP = re.compile(r"""^(?:git@|https:\/\/)github.com[:\/](.+)\/(.+).git$""")
+REMOTE_REGEXP = re.compile(
+    r"""^(?:git@|https:\/\/)github.com[:\/](.*?)\/(.*?)(?:.git)?$"""
+)
 
 
 @lru_cache(maxsize=None)
@@ -36,8 +38,8 @@ def get_python_versions(requires_python: str) -> List[str]:
     """
     specifier_set = SpecifierSet(requires_python)
 
-    LAST_ONE_MINOR = 6
-    LAST_TWO_MINOR = 7
+    last_one_minor = 6
+    last_two_minor = 7
 
     major_versions = []
     minor_versions = []
@@ -45,13 +47,13 @@ def get_python_versions(requires_python: str) -> List[str]:
         major_added = False
         last_minor = 100  # this supposes we will never have Python x.100
         if major == 1:
-            last_minor = LAST_ONE_MINOR
-        elif major == 2:
-            last_minor = LAST_TWO_MINOR
+            last_minor = last_one_minor
+        elif major == 2:  # noqa: PLR2004
+            last_minor = last_two_minor
         for minor in range(last_minor + 1):
             if specifier_set.contains(Version(f"{major}.{minor}")):
                 if not major_added:
-                    if len(major_versions) > 0 and major >= 4:
+                    if len(major_versions) > 0 and major >= 4:  # noqa: PLR2004
                         raise Exception(
                             "Multiple major versions is not supported for 3 and up"
                         )

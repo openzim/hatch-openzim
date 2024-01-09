@@ -1,8 +1,9 @@
-from hatch_openzim.metadata import update
+import os
+from pathlib import Path
 
 import pytest
-from pathlib import Path
-import os
+
+from hatch_openzim.metadata import update
 
 
 @pytest.fixture
@@ -24,7 +25,7 @@ def metadata(dynamic_metadata):
     }
 
 
-def test_metadata_nominal(metadata, dynamic_metadata):
+def test_metadata_nominal(metadata):
     update(
         root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
         config={},
@@ -116,25 +117,25 @@ def test_metadata_preserve_value(metadata, metadata_key):
     assert metadata[metadata_key] == f"some_value_for_{metadata_key}"
 
 
-def test_metadata_additional_keywords(metadata, dynamic_metadata):
+def test_metadata_additional_keywords(metadata):
     config = {}
-    config[f"additional-keywords"] = ["keyword1", "keyword2"]
+    config["additional-keywords"] = ["keyword1", "keyword2"]
     update(
         root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
         config=config,
         metadata=metadata,
     )
     # we compare sets because order is not relevant
-    assert set(metadata["keywords"]) == set(["kiwix", "keyword1", "keyword2"])
+    assert set(metadata["keywords"]) == {"kiwix", "keyword1", "keyword2"}
 
 
-def test_metadata_is_scraper(metadata, dynamic_metadata):
+def test_metadata_is_scraper(metadata):
     config = {}
-    config[f"kind"] = "scraper"
+    config["kind"] = "scraper"
     update(
         root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
         config=config,
         metadata=metadata,
     )
     # we compare sets because order is not relevant
-    assert set(metadata["keywords"]) == set(["kiwix", "offline", "zim"])
+    assert set(metadata["keywords"]) == {"kiwix", "offline", "zim"}

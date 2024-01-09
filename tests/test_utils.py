@@ -14,8 +14,13 @@ def mock_check_output(mocker):
     "path_to_repo, git_url, expected_homepage_url",
     [
         (
-            "/path/https/repo",  # this must change between test cases due to lru_cache
+            "/path/https/repo1",  # this must change between test cases due to lru_cache
             b"https://github.com/oneuser/onerepo.git\n",
+            "https://github.com/oneuser/onerepo",
+        ),
+        (
+            "/path/https/repo2",  # this must change between test cases due to lru_cache
+            b"https://github.com/oneuser/onerepo\n",
             "https://github.com/oneuser/onerepo",
         ),
         (
@@ -91,6 +96,6 @@ def test_get_python_versions_ok(requires_python: str, expected_versions: List[st
 )
 def test_get_python_versions_ko(requires_python: str):
     with pytest.raises(
-        Exception, match=f"Multiple major versions is not supported for 3 and up"
+        Exception, match="Multiple major versions is not supported for 3 and up"
     ):
         get_python_versions(requires_python)
