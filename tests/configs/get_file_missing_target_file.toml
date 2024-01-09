@@ -1,0 +1,7 @@
+# config section is missing the mandatory 'target_dir'
+[files.part1.config]
+target_dir="part1"
+
+[files.part1.actions.action1]
+action="get_file"
+source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"

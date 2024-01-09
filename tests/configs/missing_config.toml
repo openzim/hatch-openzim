@@ -1,0 +1,5 @@
+# part without config section, only actions
+[files.part1.actions.action1]
+action="extract_all"
+source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
+target_dir="action1"
