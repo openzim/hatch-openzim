@@ -1,32 +1,41 @@
+import configparser
 import re
-import subprocess
-from functools import lru_cache
+from pathlib import Path
 from typing import List
 
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
 
+from hatch_openzim.shared import logger
+
 REMOTE_REGEXP = re.compile(
-    r"""^(?:git@|https:\/\/)github.com[:\/](.*?)\/(.*?)(?:.git)?$"""
+    r"""^(?:git@|https:\/\/)github.com[:\/](?P<organization>.*?)\/"""
+    r"""(?P<repository>.*?)(?:.git)?$"""
 )
 
+DEFAULT_GITHUB_PROJECT_HOMEPAGE = "https://www.kiwix.org"
 
-@lru_cache(maxsize=None)
-def get_github_project_homepage(root: str, remote: str = "origin") -> str:
-    git_remote_url = (
-        subprocess.check_output(
-            ["git", "config", "--get", f"remote.{remote}.url"], cwd=root  # noqa: S607
+
+def get_github_project_homepage(git_config_path: Path, remote: str = "origin") -> str:
+    if not git_config_path.exists() or not git_config_path.is_file():
+        return DEFAULT_GITHUB_PROJECT_HOMEPAGE
+
+    try:
+        config = configparser.ConfigParser()
+        config.read(git_config_path)
+        git_remote_url = config[f'remote "{remote}"']["url"]
+        match = REMOTE_REGEXP.match(git_remote_url)
+        if not match:
+            raise Exception(f"Unexpected remote url: {git_remote_url}")
+        return (
+            f"https://github.com/{match.group('organization')}/"
+            f"{match.group('repository')}"
         )
-        .decode("utf-8")
-        .strip()
-    )
-    match = REMOTE_REGEXP.match(git_remote_url)
-    if not match:
-        raise Exception(f"Unexpected remote url: {git_remote_url}")
-    return f"https://github.com/{match.group(1)}/{match.group(2)}"
+    except Exception as exc:
+        logger.error("Failed to read Github URL", exc_info=exc)
+        return DEFAULT_GITHUB_PROJECT_HOMEPAGE
 
 
-@lru_cache(maxsize=None)
 def get_python_versions(requires_python: str) -> List[str]:
     """
     Returns the list of major and major.minor versions compatible with the specifier
@@ -38,8 +47,8 @@ def get_python_versions(requires_python: str) -> List[str]:
     """
     specifier_set = SpecifierSet(requires_python)
 
-    last_one_minor = 6
-    last_two_minor = 7
+    last_py1_minor = 6
+    last_py2_minor = 7
 
     major_versions = []
     minor_versions = []
@@ -47,9 +56,9 @@ def get_python_versions(requires_python: str) -> List[str]:
         major_added = False
         last_minor = 100  # this supposes we will never have Python x.100
         if major == 1:
-            last_minor = last_one_minor
+            last_minor = last_py1_minor
         elif major == 2:  # noqa: PLR2004
-            last_minor = last_two_minor
+            last_minor = last_py2_minor
         for minor in range(last_minor + 1):
             if specifier_set.contains(Version(f"{major}.{minor}")):
                 if not major_added:

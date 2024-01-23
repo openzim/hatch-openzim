@@ -1,4 +1,3 @@
-import os
 import shutil
 import tempfile
 import zipfile
@@ -8,7 +7,7 @@ from urllib.request import urlopen
 
 try:
     import tomllib
-except ImportError:
+except ImportError:  # pragma: no cover
     import toml as tomllib
 
 from hatch_openzim.shared import logger
@@ -19,18 +18,19 @@ DEFAULT_OPENZIM_TOML_LOCATION = "openzim.toml"
 def process(openzim_toml_location: str = DEFAULT_OPENZIM_TOML_LOCATION):
     """performs openZIM operations on files, i.e. download and extract ZIPs
 
-    Configuration is read from openzim.toml which must be in current directory
+    Configuration is read from openzim.toml which must be in root of the hatch project,
+    next to pyproject.toml
 
     openzim_toml_location: location of the openzim.toml file with instructions about
     files to install locally
     """
-    openzim_file = Path(openzim_toml_location)
-    if not openzim_file.exists():
+    config_path = Path(openzim_toml_location)
+    if not config_path.exists():
         if openzim_toml_location != DEFAULT_OPENZIM_TOML_LOCATION:
             raise Exception(f"File is missing at {openzim_toml_location}")
         else:
             return
-    config = tomllib.loads(openzim_file.read_text())
+    config = tomllib.loads(config_path.read_text())
     files_config = config.get("files", None)
     if not files_config:
         return
@@ -155,9 +155,9 @@ def _process_extract_items_action(
 
     with tempfile.TemporaryDirectory() as tempdir:
         _extract_zip_from_url(url=source, extract_to=tempdir)
-        for i in range(0, len(zip_paths)):
-            item_src = Path(tempdir) / str(zip_paths[i])
-            item_dst = base_target_dir / str(target_paths[i])
+        for index, zip_path in enumerate(zip_paths):
+            item_src = Path(tempdir) / str(zip_path)
+            item_dst = base_target_dir / str(target_paths[index])
             if item_dst.is_dir():  # will check if it exists as well
                 shutil.rmtree(item_dst)
             shutil.move(src=str(item_src), dst=item_dst)
@@ -199,4 +199,4 @@ def _extract_zip_from_url(url, extract_to):
             shutil.copyfileobj(response, temp_zip)
         with zipfile.ZipFile(temp_zip.name, "r") as zip_file:
             zip_file.extractall(extract_to)
-        os.remove(temp_zip.name)
+        Path(temp_zip.name).unlink()

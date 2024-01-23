@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from hatch_openzim.utils import get_github_project_homepage, get_python_versions
 
 
@@ -12,8 +14,8 @@ def update(root: str, config: dict, metadata: dict):
 
         if metadata_key in metadata:
             raise ValueError(
-                f"'{metadata_key}' may not be listed in the 'project' table when using "
-                "openzim metadata hook."
+                f"'{metadata_key}' must not be listed in the 'project' table when using"
+                " openzim metadata hook."
             )
         if metadata_key not in metadata.get("dynamic", []):
             raise ValueError(
@@ -24,7 +26,9 @@ def update(root: str, config: dict, metadata: dict):
     if not config.get("preserve-urls", False):
         metadata["urls"] = {
             "Donate": "https://www.kiwix.org/en/support-us/",
-            "Homepage": get_github_project_homepage(root=root),
+            "Homepage": get_github_project_homepage(
+                git_config_path=Path(root) / ".git/config"
+            ),
         }
 
     if not config.get("preserve-authors", False):

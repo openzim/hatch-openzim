@@ -85,7 +85,7 @@ def test_metadata_metadata_already_there(metadata, metadata_key):
     metadata[metadata_key] = "some_value"
     with pytest.raises(
         Exception,
-        match=f"'{metadata_key}' may not be listed in the 'project' table when using "
+        match=f"'{metadata_key}' must not be listed in the 'project' table when using "
         "openzim metadata hook",
     ):
         update(

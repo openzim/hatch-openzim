@@ -1,3 +1,6 @@
+import tempfile
+from contextlib import contextmanager
+from pathlib import Path
 from typing import List
 
 import pytest
@@ -6,60 +9,81 @@ from hatch_openzim.utils import get_github_project_homepage, get_python_versions
 
 
 @pytest.fixture
-def mock_check_output(mocker):
-    return mocker.patch("subprocess.check_output", autospec=True)
+def mock_git_config():
+    @contextmanager
+    def _mock_git_config(git_origin_url: str, remote_name: str = "origin"):
+        with tempfile.NamedTemporaryFile() as temp_file:
+            git_config = Path(temp_file.name)
+            git_config.write_text(
+                f"""
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[remote "{remote_name}"]
+        url = {git_origin_url}
+        fetch = +refs/heads/*:refs/remotes/origin/*
+"""
+            )
+            yield git_config
+
+    yield _mock_git_config
 
 
 @pytest.mark.parametrize(
-    "path_to_repo, git_url, expected_homepage_url",
+    "git_url, expected_homepage_url",
     [
         (
-            "/path/https/repo1",  # this must change between test cases due to lru_cache
-            b"https://github.com/oneuser/onerepo.git\n",
+            "https://github.com/oneuser/onerepo.git",
             "https://github.com/oneuser/onerepo",
         ),
         (
-            "/path/https/repo2",  # this must change between test cases due to lru_cache
-            b"https://github.com/oneuser/onerepo\n",
+            "https://github.com/oneuser/onerepo",
             "https://github.com/oneuser/onerepo",
         ),
         (
-            "/path/git/repo",  # this must change between test cases due to lru_cache
-            b"git@github.com:oneuser/one-repo.git\n",
+            "git@github.com:oneuser/one-repo.git",
             "https://github.com/oneuser/one-repo",
         ),
     ],
 )
 def test_get_github_project_homepage_valid_url(
-    mock_check_output, path_to_repo, git_url, expected_homepage_url
+    mock_git_config, git_url, expected_homepage_url
 ):
-    mock_check_output.return_value = git_url
-    result = get_github_project_homepage(path_to_repo)
-    assert result == expected_homepage_url
+    with mock_git_config(git_url) as git_config_path:
+        assert (
+            get_github_project_homepage(git_config_path=git_config_path)
+            == expected_homepage_url
+        )
 
 
-@pytest.mark.parametrize(
-    "path_to_repo, git_url",
-    [
-        (
-            "/path/http/repo",
-            b"http://github.com/oneuser/onerepo.git\n",
-        ),
-    ],
-)
-def test_get_github_project_homepage_invalid_url(
-    mock_check_output, path_to_repo, git_url
-):
-    # Mock the subprocess.check_output call
-    mock_check_output.return_value = git_url
-
+def test_get_github_project_homepage_invalid_url(mock_git_config):
     # Test the function with an invalid URL
-    with pytest.raises(
-        Exception, match=f"Unexpected remote url: {git_url.decode('utf-8').strip()}"
-    ):
-        get_github_project_homepage(path_to_repo)
+    with mock_git_config("http://github.com/oneuser/onerepo.git") as git_config_path:
+        assert (
+            get_github_project_homepage(git_config_path=git_config_path)
+            == "https://www.kiwix.org"
+        )
 
-    mock_check_output.assert_called_once()
+
+def test_get_github_project_missing_git_config():
+    # Test the function with an invalid URL
+    assert (
+        get_github_project_homepage(git_config_path=Path("i_m_not_here.config"))
+        == "https://www.kiwix.org"
+    )
+
+
+def test_get_github_project_homepage_invalid_remote(mock_git_config):
+    # Test the function with an invalid URL
+    with mock_git_config(
+        "https://github.com/oneuser/onerepo.git", remote_name="origin2"
+    ) as git_config_path:
+        assert (
+            get_github_project_homepage(git_config_path=git_config_path)
+            == "https://www.kiwix.org"
+        )
 
 
 @pytest.mark.parametrize(
