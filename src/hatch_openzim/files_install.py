@@ -6,7 +6,10 @@ from pathlib import Path
 from typing import Any, Dict, List
 from urllib.request import urlopen
 
-import toml  # to be replaced by tomllib once only 3.11 and above is supported
+try:
+    import tomllib
+except ImportError:
+    import toml as tomllib
 
 from hatch_openzim.shared import log
 
@@ -27,7 +30,7 @@ def process(openzim_toml_location: str = DEFAULT_OPENZIM_TOML_LOCATION):
             raise Exception(f"File is missing at {openzim_toml_location}")
         else:
             return
-    config = toml.loads(openzim_file.read_text())
+    config = tomllib.loads(openzim_file.read_text())
     files_config = config.get("files", None)
     if not files_config:
         return
