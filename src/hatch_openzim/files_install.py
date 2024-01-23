@@ -11,7 +11,7 @@ try:
 except ImportError:
     import toml as tomllib
 
-from hatch_openzim.shared import log
+from hatch_openzim.shared import logger
 
 DEFAULT_OPENZIM_TOML_LOCATION = "openzim.toml"
 
@@ -42,7 +42,7 @@ def process(openzim_toml_location: str = DEFAULT_OPENZIM_TOML_LOCATION):
 def _process_section(section_name: str, section_data: Dict[str, Any]):
     """processes all actions required for one section (i.e. one target folder)"""
 
-    log.info(f"Processing {section_name} section")
+    logger.info(f"Processing {section_name} section")
     section_config = section_data.get("config", None)
     if not section_config:
         raise Exception("config table is mandatory")
@@ -52,22 +52,22 @@ def _process_section(section_name: str, section_data: Dict[str, Any]):
     base_target_dir = Path(base_target_dir)
     section_actions = section_data.get("actions", None)
     if not section_actions:
-        log.info("  No actions to process")
+        logger.info("  No actions to process")
         return
     base_target_dir = Path(section_config["target_dir"])
     base_target_dir.mkdir(parents=True, exist_ok=True)
-    log.info(f"  Installing files in {base_target_dir}")
+    logger.info(f"  Installing files in {base_target_dir}")
     for action_name, action_config in section_actions.items():
         _process_one_action(base_target_dir, action_name, action_config)
 
-    log.info(" All done")
+    logger.info(" All done")
 
 
 def _process_one_action(
     base_target_dir: Path, action_name: str, action_data: Dict[str, Any]
 ):
     """processes one action (basically trigger the right kind of action)"""
-    log.info(f"  Processing {action_name} action")
+    logger.info(f"  Processing {action_name} action")
     source = action_data.get("source", None)
     if not source:
         raise Exception("source is not configured")
@@ -93,7 +93,7 @@ def _process_one_action(
     else:
         raise Exception(f"Unsupported action '{action}'")
 
-    log.info("    Done")
+    logger.info("    Done")
 
 
 def _process_get_file_action(
