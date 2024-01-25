@@ -110,12 +110,14 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
 
     for action in actions:
         logger.info(f"    Executing '{action}'")
-        result = subprocess.check_output(
+        result = subprocess.run(
             action,
             shell=True,  # noqa: S602
             cwd=base_target_dir,
             stderr=subprocess.STDOUT,
-        ).decode("utf-8")
+            text=True,
+            check=True,
+        )
         if result:
             logger.info(result)
 
