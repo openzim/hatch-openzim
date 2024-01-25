@@ -12,7 +12,7 @@ class OpenzimMetadataHook(MetadataHookInterface):
     - project urls
     """
 
-    PLUGIN_NAME = "openzim"
+    PLUGIN_NAME = "openzim-metadata"
 
     def update(self, metadata: dict):
         """Update the project table's metadata."""

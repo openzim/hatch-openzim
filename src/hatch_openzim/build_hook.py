@@ -10,7 +10,7 @@ class OpenzimBuildHook(BuildHookInterface):
     - files installation
     """
 
-    PLUGIN_NAME = "openzim"
+    PLUGIN_NAME = "openzim-build"
 
     def initialize(self, version, build_data):  # noqa: ARG002
         if "toml-config" in self.config:
