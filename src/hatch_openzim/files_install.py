@@ -61,6 +61,10 @@ def _process_section(section_name: str, section_data: Dict[str, Any]):
     for action_name, action_config in section_actions.items():
         _process_one_action(base_target_dir, action_name, action_config)
 
+    execute_after = section_config.get("execute_after", None)
+    if execute_after:
+        _process_execute_after(base_target_dir=base_target_dir, actions=execute_after)
+
     logger.info(" All done")
 
 
@@ -94,19 +98,17 @@ def _process_one_action(
     else:
         raise Exception(f"Unsupported action '{action}'")
 
-    _process_execute_after(base_target_dir, action_data)
+    execute_after = action_data.get("execute_after", None)
+    if execute_after:
+        _process_execute_after(base_target_dir=base_target_dir, actions=execute_after)
 
     logger.info("    Done")
 
 
-def _process_execute_after(base_target_dir: Path, action_data: Dict[str, Any]):
+def _process_execute_after(base_target_dir: Path, actions: List[str]):
     """execute actions after file(s) installation"""
 
-    execute_after = action_data.get("execute_after", None)
-    if not execute_after:
-        return
-
-    for action in execute_after:
+    for action in actions:
         logger.info(f"    Executing '{action}'")
         result = subprocess.check_output(
             action,

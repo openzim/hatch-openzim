@@ -1,5 +1,9 @@
 [files.part1.config]
 target_dir="part1"
+execute_after=[
+    "mkdir -p somewhere_else",
+    "touch somewhere_else/something.txt",
+]
 
 [files.part1.actions.action1]
 action="extract_all"
