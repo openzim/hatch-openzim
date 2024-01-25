@@ -6,6 +6,11 @@ action="extract_all"
 source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
 target_dir="action1"
 remove=["remove1", "remove2.txt", "remove3/file1.txt"]
+execute_after=[
+    "mkdir -p somewhere",
+    "touch somewhere/something.txt",
+    "ls"
+]
 
 [files.part2.config]
 target_dir="part2"

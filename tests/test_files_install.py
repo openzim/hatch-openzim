@@ -1,4 +1,5 @@
 import os
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import List
@@ -16,6 +17,7 @@ def nominal_files():
         "part1/action1/keep1/file1.txt",
         "part1/action1/keep1/file2.txt",
         "part1/action1/remove3/file2.txt",
+        "part1/somewhere/something.txt",
         "part2/action2/file1.txt",
         "part2/action2/file2.txt",
         "part2/action3/file1.json",
@@ -197,3 +199,22 @@ def test_assets_already_there_get_file(nominal_files: List[str]):
         assert set(existing_files) == set(nominal_files)
         assert len(existing_files) == len(nominal_files)
         assert Path(temp_dir, "part4/file4.txt").lstat().st_size == 0
+
+
+def test_execute_after_failure():
+    """Test case where the execute after command is failing"""
+
+    # Proceed with installation in a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+
+        with pytest.raises(
+            subprocess.CalledProcessError,
+        ):
+            files_install.process(
+                str(
+                    (
+                        Path(__file__).parent / "configs/execute_after_failure.toml"
+                    ).absolute()
+                )
+            )

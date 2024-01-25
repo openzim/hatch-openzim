@@ -1,4 +1,5 @@
 import shutil
+import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
@@ -93,7 +94,28 @@ def _process_one_action(
     else:
         raise Exception(f"Unsupported action '{action}'")
 
+    _process_execute_after(base_target_dir, action_data)
+
     logger.info("    Done")
+
+
+def _process_execute_after(base_target_dir: Path, action_data: Dict[str, Any]):
+    """execute actions after file(s) installation"""
+
+    execute_after = action_data.get("execute_after", None)
+    if not execute_after:
+        return
+
+    for action in execute_after:
+        logger.info(f"    Executing '{action}'")
+        result = subprocess.check_output(
+            action,
+            shell=True,  # noqa: S602
+            cwd=base_target_dir,
+            stderr=subprocess.STDOUT,
+        ).decode("utf-8")
+        if result:
+            logger.info(result)
 
 
 def _process_get_file_action(
