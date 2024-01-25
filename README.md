@@ -33,22 +33,22 @@ readme = "README.md"
 # and version plugins.
 dynamic = ["authors", "classifiers", "keywords", "license", "version", "urls"]
 
-# Enable the hatch-openzim metadata hook to generate dependencies from addons manifests.
-[tool.hatch.metadata.hooks.openzim]
-additional-keywords = ["awesome"] # some additional 
+# Enable the hatch-openzim metadata hook to generate default openZIM metadata.
+[tool.hatch.metadata.hooks.openzim-metadata]
+additional-keywords = ["awesome"] # some additional keywords
 kind = "scraper" # indicate this is a scraper, so that additional keywords are added
 
-# Enable the hatch-openzim build hook to generate dependencies from addons manifests.
-[tool.hatch.build.hooks.openzim]
+# Enable the hatch-openzim build hook to install files (e.g. JS libs) at build time.
+[tool.hatch.build.hooks.openzim-build]
 toml-config = "openzim.toml" # optional location of the configuration file
+dependencies = [ "zimscraperlib==3.1.0" ] # optional dependencies needed for file installations
 ```
+
+NOTA: the `dependencies` attribute is not specific to our hook(s), it is a generic [hatch(ling) feature](https://hatch.pypa.io/1.9/config/build/#dependencies_1).
 
 ## Metadata hook usage
 
-The build hook configuration is done in a file named `openzim.toml` (if not customized)
- which must be placed in the root folder, next to your `pyproject.toml`.
-
-### Configuration
+### Configuration (in `pyproject.toml`)
 
 | Variable | Required | Description |
 |---|---|---|
@@ -70,44 +70,52 @@ The metadata hook will set:
   - all `Programming Language :: Python :: x` and `Programming Language :: Python :: x.y` matching the `required-versions`
 - `keywords` will contain:
   - at least `kiwix`
-  - if `kind` is `scraper`, ...
+  - if `kind` is `scraper`, it will add `zim` and `offline`
   - and `additional-keywords` passed in the configuration
-- `license` to `{"text": "GPL-3.0-or-later"}``
+- `license` to `{"text": "GPL-3.0-or-later"}`
 - `urls` to
-  - `"Donate": "https://www.kiwix.org/en/support-us/"`
-  - `"Homepage": "https://github.com/openzim/hatch-openzim"`
+  - `Donate`: `https://www.kiwix.org/en/support-us/`
+  - `Homepage`: Github repository URL (e.g. `https://github.com/openzim/hatch-openzim`) if code is a git clone, otherwise `https://www.kiwix.org`
 
 
 ## Build hook usage
 
-The build hook configuration is done in a file named `openzim.toml` (if not customized)
- which must be placed in the root folder, next to your `pyproject.toml`.
-
-### Configuration
+### High-level configuration (in `pyproject.toml`)
 
 | Variable | Required | Description |
 |---|---|---|
-| `toml-config` | N | Location of the configuration |
+| `toml-config` | N | Location of the configuration, default to `openzim.toml` |
 
-### Files installation
+### Details configuration (in `openzim.toml`)
+
+The build hook detailed configuration is done in a TOML file named `openzim.toml` (if not customized
+ via `toml-config`, see above). This file must be placed your project root folder, next to your
+  `pyproject.toml`.
 
 The build hook supports to download web resources at various location at build time.
 
-To configure, this you first have to create a `files` section in the configuration and
-declare its `config` configuration. Name of the section (`assets` in example below) is
+To configure, this you first have to create a `files` section in the `openzim.toml` configuration
+and declare its `config` configuration. Name of the section (`assets` in example below) is
 free (do not forgot to escape it if you want to use special chars like `.` in the name).
 
 ```toml
 [files.assets.config]
 target_dir="src/hatch_openzim/templates/assets"
+execute_after=[
+    "touch somewhere/something.txt"
+]
 ```
 
-Configuration:
+| Variable | Required | Description |
+|---|---|---|
+| `target_dir` | Y | Base directory where all downloaded content will be placed |
+| `execute_after` | N | List of shell commands to execute once all actions (see below) have been executed; actions are executed with `target_dir` as current working directory |
 
-- `target_dir`: Base directory where all downloaded content will be placed
+**Important:** The `execute_after` commands are **always** executed, no matter how many action are
+ present or how many actions have been ignored (see below for details about why an action might be ignored).
 
-Once this section configuration is done, you will then declare multiple action. All
-actions in a given section share the same base configuration
+Once this section configuration is done, you will then declare multiple actions. All
+actions in a given section share the same base configuration declared above.
 
 Three kinds of actions are supported:
 
@@ -122,13 +130,18 @@ Each action is declared in its own TOML table. Action names are free.
 action=...
 ```
 
-### `get_file` action
+### `get_file` action configuration (in `openzim.toml`)
 
 This action downloads a file to a location.
 
-- `action`: "get_file"
-- `source`: URL of the online resource to download
-- `target_file`: relative path to the file
+**Important:** If `target_file` is already present, the action is not executed, it is simply ignored.
+
+| Variable | Required | Description |
+|---|---|---|
+| `action` | Y | Must be "get_file" |
+| `source`| Y | URL of the online resource to download |
+| `target_file` | Y | Relative path to the file target location, relative to the section `target_dir` |
+| `execute_after` | N | List of shell commands to execute once file installation is completed; actions are executed with the section `target_dir` as current working directory |
 
 You will find a sample below.
 
@@ -139,15 +152,21 @@ source="https://code.jquery.com/jquery-3.5.1.min.js"
 target_file="jquery.min.js"
 ```
 
-### `extract_all` action
+### `extract_all` action configuration (in `openzim.toml`)
 
 This action downloads a ZIP and extracts it to a location. Some items in the Zip content
 can be removed afterwards.
 
-- `action`: "extract_all"
-- `source`: URL of the online ZIP to download
-- `target_dir`: relative path of the directory where ZIP content will be extracted
-- `remove`: Optional - list of glob patterns of ZIP content to remove after extraction
+**Important:** If `target_dir` is already present, the action is not executed, it is simply ignored.
+
+| Variable | Required | Description |
+|---|---|---|
+| `action` | Y | Must be "extract_all" |
+| `source` | Y | URL of the online ZIP to download |
+| `target_dir` | Y | Relative path of the directory where ZIP content will be extracted, relative to the section `target_dir` |
+| `remove` | N | List of glob patterns of ZIP content to remove after extraction (relative to action `target_dir`) |
+| `execute_after` | N | List of shell commands to execute once files extraction is completed; actions are executed with the section `target_dir` as current working directory |
+
 
 You will find a sample below.
 
@@ -162,20 +181,25 @@ target_dir="chosen"
 remove=["docsupport", "chosen.proto.*", "*.html", "*.md"]
 ```
 
-### `extract_items` action
+### `extract_items` action configuration (in `openzim.toml`)
 
 This action extracts a ZIP to a temporary directory, and move selected items to some locations.
 Some sub-items in the Zip content can be removed afterwards.
 
-- `action`: "extract_all"
-- `source`: URL of the online ZIP to download
-- `zip_paths`: list of relative path in ZIP to select
-- `target_paths`: relative path of the target directory where selected items will be moved
-- `remove`: Optional - list of glob patterns of ZIP content to remove after extraction (must include the target paths)
+**Important:** If any `target_paths` is already present, the action is not executed, it is simply ignored.
+
+| Variable | Required | Description |
+|---|---|---|
+| `action`| Y | Must be "extract_all" |
+| `source`| Y | URL of the online ZIP to download |
+| `zip_paths` | Y | List of relative path in ZIP to select |
+| `target_paths` | Y | Relative path of the target directory where selected items will be moved (relative to ZIP home folder) |
+| `remove` | N | List of glob patterns of ZIP content to remove after extraction (must include the target paths, they are relative to the section `target_dir`) |
+| `execute_after` | N | List of shell commands to execute once ZIP extraction is completed; actions are executed with the section `target_dir` as current working directory |
 
 Nota:
-- the `zip_paths` and `target_paths` are match one-by-one, and must hence have the same length.
-- the ZIP is first save to a temporary location before extraction, consuming some disk space
+- the `zip_paths` and `target_paths` are matched one-by-one, and must hence have the same length.
+- the ZIP is first saved to a temporary location before extraction, consuming some disk space
 - all content is extracted before selected items are moved, and the rest is deleted
 
 You will find a sample below.
@@ -196,11 +220,17 @@ A full example with two distinct sections and three actions in total is below.
 ```toml
 [files.assets.config]
 target_dir="src/hatch_openzim/templates/assets"
+execute_after=[
+    "fix_ogvjs_dist .",
+]
 
 [files.assets.actions."jquery.min.js"]
 action="get_file"
 source="https://code.jquery.com/jquery-3.5.1.min.js"
 target_file="jquery.min.js"
+execute_after=[
+    "touch done.txt",
+]
 
 [files.assets.actions.chosen]
 action="extract_all"
