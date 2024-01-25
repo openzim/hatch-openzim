@@ -109,7 +109,9 @@ def _process_get_file_action(
         local_dir = base_target_dir / str(target_dir)
         local_dir.mkdir(parents=True, exist_ok=True)
     local_file = local_dir / str(target_file)
-    local_file.unlink(missing_ok=True)
+    if local_file.exists():
+        logger.info("    Skipping, local_file is already present")
+        return
     _download_file(source, local_file)
 
 
@@ -125,7 +127,8 @@ def _process_extract_all_action(
         raise Exception("target_dir is mandatory when action='extract_all'")
     target_dir = base_target_dir / str(target_dir)
     if target_dir.exists():
-        shutil.rmtree(target_dir)
+        logger.info("    Skipping, target_dir is already present")
+        return
     if not target_dir.parent.exists():
         target_dir.parent.mkdir(parents=True, exist_ok=True)
     _extract_zip_from_url(url=source, extract_to=target_dir)
@@ -153,13 +156,18 @@ def _process_extract_items_action(
             f" {len(target_paths)})"
         )
 
+    # do not re-install if asset has already been installed
+    if any(
+        (base_target_dir / str(target_path)).exists() for target_path in target_paths
+    ):
+        logger.info("    Skipping, at least one target path is already present")
+        return
+
     with tempfile.TemporaryDirectory() as tempdir:
         _extract_zip_from_url(url=source, extract_to=tempdir)
         for index, zip_path in enumerate(zip_paths):
             item_src = Path(tempdir) / str(zip_path)
             item_dst = base_target_dir / str(target_paths[index])
-            if item_dst.is_dir():  # will check if it exists as well
-                shutil.rmtree(item_dst)
             shutil.move(src=str(item_src), dst=item_dst)
 
     if "remove" in action_data:
