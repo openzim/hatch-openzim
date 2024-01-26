@@ -114,6 +114,8 @@ execute_after=[
 **Important:** The `execute_after` commands are **always** executed, no matter how many action are
  present or how many actions have been ignored (see below for details about why an action might be ignored).
 
+Nota: The example `execute_after` command (`touch`) is not representative of what you would usually do ^^
+
 Once this section configuration is done, you will then declare multiple actions. All
 actions in a given section share the same base configuration declared above.
 
@@ -216,6 +218,8 @@ remove=["ogvjs/COPYING", "ogvjs/*.txt", "ogvjs/README.md"]
 ### Full sample
 
 A full example with two distinct sections and three actions in total is below.
+
+Nota: The `touch` command in `execute_after` is not representative of what you would usually do ^^
 
 ```toml
 [files.assets.config]
