@@ -110,16 +110,16 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
 
     for action in actions:
         logger.info(f"    Executing '{action}'")
-        result = subprocess.run(
+        process = subprocess.run(
             action,
             shell=True,  # noqa: S602
             cwd=base_target_dir,
-            stderr=subprocess.STDOUT,
             text=True,
             check=True,
+            capture_output=True,
         )
-        if result:
-            logger.info(result)
+        if process.stdout:
+            logger.info(f"      stdout:\n{process.stdout}")
 
 
 def _process_get_file_action(

@@ -13,7 +13,7 @@ remove=["remove1", "remove2.txt", "remove3/file1.txt"]
 execute_after=[
     "mkdir -p somewhere",
     "touch somewhere/something.txt",
-    "ls"
+    "ls -lah",
 ]
 
 [files.part2.config]
