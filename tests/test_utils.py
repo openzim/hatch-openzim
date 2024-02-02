@@ -5,7 +5,7 @@ from typing import List
 
 import pytest
 
-from hatch_openzim.utils import get_github_project_homepage, get_python_versions
+from hatch_openzim.utils import GithubInfo, get_github_info, get_python_versions
 
 
 @pytest.fixture
@@ -32,46 +32,55 @@ def mock_git_config():
 
 
 @pytest.mark.parametrize(
-    "git_url, expected_homepage_url",
+    "git_url, expected_homepage_url, expected_organization, expected_repository",
     [
         (
             "https://github.com/oneuser/onerepo.git",
             "https://github.com/oneuser/onerepo",
+            "oneuser",
+            "onerepo",
         ),
         (
             "https://github.com/oneuser/onerepo",
             "https://github.com/oneuser/onerepo",
+            "oneuser",
+            "onerepo",
         ),
         (
             "git@github.com:oneuser/one-repo.git",
             "https://github.com/oneuser/one-repo",
+            "oneuser",
+            "one-repo",
         ),
     ],
 )
 def test_get_github_project_homepage_valid_url(
-    mock_git_config, git_url, expected_homepage_url
+    mock_git_config,
+    git_url,
+    expected_homepage_url,
+    expected_organization,
+    expected_repository,
 ):
     with mock_git_config(git_url) as git_config_path:
-        assert (
-            get_github_project_homepage(git_config_path=git_config_path)
-            == expected_homepage_url
+        assert get_github_info(git_config_path=git_config_path) == GithubInfo(
+            homepage=expected_homepage_url,
+            organization=expected_organization,
+            repository=expected_repository,
         )
 
 
 def test_get_github_project_homepage_invalid_url(mock_git_config):
     # Test the function with an invalid URL
     with mock_git_config("http://github.com/oneuser/onerepo.git") as git_config_path:
-        assert (
-            get_github_project_homepage(git_config_path=git_config_path)
-            == "https://www.kiwix.org"
+        assert get_github_info(git_config_path=git_config_path) == GithubInfo(
+            homepage="https://www.kiwix.org", organization=None, repository=None
         )
 
 
 def test_get_github_project_missing_git_config():
     # Test the function with an invalid URL
-    assert (
-        get_github_project_homepage(git_config_path=Path("i_m_not_here.config"))
-        == "https://www.kiwix.org"
+    assert get_github_info(git_config_path=Path("i_m_not_here.config")) == GithubInfo(
+        homepage="https://www.kiwix.org", organization=None, repository=None
     )
 
 
@@ -80,9 +89,8 @@ def test_get_github_project_homepage_invalid_remote(mock_git_config):
     with mock_git_config(
         "https://github.com/oneuser/onerepo.git", remote_name="origin2"
     ) as git_config_path:
-        assert (
-            get_github_project_homepage(git_config_path=git_config_path)
-            == "https://www.kiwix.org"
+        assert get_github_info(git_config_path=git_config_path) == GithubInfo(
+            homepage="https://www.kiwix.org", organization=None, repository=None
         )
 
 

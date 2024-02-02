@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from hatch_openzim.utils import get_github_project_homepage, get_python_versions
+from hatch_openzim.utils import get_github_info, get_python_versions
 
 
 def update(root: str, config: dict, metadata: dict):
@@ -23,19 +23,29 @@ def update(root: str, config: dict, metadata: dict):
                 "openzim metadata hook."
             )
 
+    github_info = get_github_info(git_config_path=Path(root) / ".git/config")
+
+    organization = config.get("organization", github_info.organization)
+
     if not config.get("preserve-urls", False):
         metadata["urls"] = {
             "Donate": "https://www.kiwix.org/en/support-us/",
-            "Homepage": get_github_project_homepage(
-                git_config_path=Path(root) / ".git/config"
-            ),
+            "Homepage": github_info.homepage,
         }
 
     if not config.get("preserve-authors", False):
-        metadata["authors"] = [{"name": "Kiwix", "email": "dev@kiwix.org"}]
+        if str(organization).lower() in ("kiwix", "offspot"):
+            authors = [{"name": "Kiwix", "email": "dev@kiwix.org"}]
+        else:
+            authors = [{"name": "openZIM", "email": "dev@openzim.org"}]
+        authors.extend(config.get("additional-authors", []))
+        metadata["authors"] = authors
 
     if not config.get("preserve-keywords", False):
-        keywords = ["kiwix"]
+        if str(organization).lower() in ("kiwix", "offspot"):
+            keywords = ["kiwix"]
+        else:
+            keywords = ["openzim"]
         if config.get("kind", "") == "scraper":
             keywords.extend(["zim", "offline"])
         keywords.extend(config.get("additional-keywords", []))

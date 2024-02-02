@@ -32,14 +32,14 @@ def test_metadata_nominal(metadata):
         metadata=metadata,
     )
 
-    assert metadata["authors"] == [{"email": "dev@kiwix.org", "name": "Kiwix"}]
+    assert metadata["authors"] == [{"email": "dev@openzim.org", "name": "openZIM"}]
     assert metadata["classifiers"] == [
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ]
-    assert metadata["keywords"] == ["kiwix"]
+    assert metadata["keywords"] == ["openzim"]
     assert metadata["license"] == {"text": "GPL-3.0-or-later"}
     assert metadata["urls"] == {
         "Donate": "https://www.kiwix.org/en/support-us/",
@@ -126,7 +126,53 @@ def test_metadata_additional_keywords(metadata):
         metadata=metadata,
     )
     # we compare sets because order is not relevant
-    assert set(metadata["keywords"]) == {"kiwix", "keyword1", "keyword2"}
+    assert set(metadata["keywords"]) == {"openzim", "keyword1", "keyword2"}
+
+
+def test_metadata_additional_authors(metadata):
+    config = {}
+    config["additional-authors"] = [{"email": "someone@acme.org", "name": "Some One"}]
+    update(
+        root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
+        config=config,
+        metadata=metadata,
+    )
+    # we compare sets because order is not relevant
+    assert metadata["authors"] == [
+        {"email": "dev@openzim.org", "name": "openZIM"},
+        {"email": "someone@acme.org", "name": "Some One"},
+    ]
+
+
+@pytest.mark.parametrize(
+    "organization, expected_result",
+    [
+        ("kiwix", "kiwix"),
+        ("Kiwix", "kiwix"),
+        ("openzim", "openzim"),
+        ("openZIM", "openzim"),
+        ("offspot", "kiwix"),
+        ("unknown", "openzim"),
+        (None, "openzim"),
+    ],
+)
+def test_metadata_organization(organization, expected_result, metadata):
+    config = {}
+    if organization:
+        config["organization"] = organization
+    update(
+        root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
+        config=config,
+        metadata=metadata,
+    )
+    if expected_result == "kiwix":
+        assert metadata["authors"] == [{"email": "dev@kiwix.org", "name": "Kiwix"}]
+        assert metadata["keywords"] == ["kiwix"]
+    elif expected_result == "openzim":
+        assert metadata["authors"] == [{"email": "dev@openzim.org", "name": "openZIM"}]
+        assert metadata["keywords"] == ["openzim"]
+    else:
+        raise Exception(f"Unexpected expected result: {expected_result}")
 
 
 def test_metadata_is_scraper(metadata):
@@ -138,4 +184,4 @@ def test_metadata_is_scraper(metadata):
         metadata=metadata,
     )
     # we compare sets because order is not relevant
-    assert set(metadata["keywords"]) == {"kiwix", "offline", "zim"}
+    assert set(metadata["keywords"]) == {"openzim", "offline", "zim"}
