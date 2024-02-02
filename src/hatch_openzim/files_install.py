@@ -112,7 +112,7 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
         logger.info(f"    Executing '{action}'")
         process = subprocess.run(
             action,
-            shell=True,  # noqa: S602
+            shell=True,  # noqa: S602 # nosec: B602
             cwd=base_target_dir,
             text=True,
             check=True,
