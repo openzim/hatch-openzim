@@ -1,11 +1,20 @@
 [files.part1.config]
 target_dir="part1"
+execute_after=[
+    "mkdir -p somewhere_else",
+    "touch somewhere_else/something.txt",
+]
 
 [files.part1.actions.action1]
 action="extract_all"
 source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
 target_dir="action1"
 remove=["remove1", "remove2.txt", "remove3/file1.txt"]
+execute_after=[
+    "mkdir -p somewhere",
+    "touch somewhere/something.txt",
+    "ls -lah",
+]
 
 [files.part2.config]
 target_dir="part2"
@@ -22,6 +31,12 @@ action="extract_items"
 source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
 zip_paths=["keep1"]
 target_paths=["action3"]
+
+[files.part2.actions.action4]
+action="extract_items"
+source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+zip_paths=["keep1/file1.txt"]
+target_paths=["file123.txt"]
 
 # part without any actions
 [files.part3.config]

@@ -1,10 +1,43 @@
 import os
+import subprocess
 import tempfile
 from pathlib import Path
+from typing import List
 
 import pytest
 
 from hatch_openzim import files_install
+
+
+@pytest.fixture
+def nominal_files():
+    return [
+        "part1/action1/file1.txt",
+        "part1/action1/file2.txt",
+        "part1/action1/keep1/file1.txt",
+        "part1/action1/keep1/file2.txt",
+        "part1/action1/remove3/file2.txt",
+        "part1/somewhere/something.txt",
+        "part1/somewhere_else/something.txt",
+        "part2/file123.txt",
+        "part2/action2/file1.txt",
+        "part2/action2/file2.txt",
+        "part2/action3/file1.json",
+        "part2/action3/file1.txt",
+        "part2/action3/file2.json",
+        "part2/action3/file2.txt",
+        "part4/action2/file4.txt",
+        "part4/file4.txt",
+        "part4/subdir1/action3/file1.txt",
+        "part4/subdir1/action3/file2.txt",
+        "part4/subdir1/action3/keep1/file1.txt",
+        "part4/subdir1/action3/keep1/file2.txt",
+        "part4/subdir1/action3/remove1/file1.txt",
+        "part4/subdir1/action3/remove1/file2.txt",
+        "part4/subdir1/action3/remove2.txt",
+        "part4/subdir1/action3/remove3/file1.txt",
+        "part4/subdir1/action3/remove3/file2.txt",
+    ]
 
 
 def test_no_arg():
@@ -67,20 +100,12 @@ def test_errors(config_file: str, exception_message: str):
         )
 
 
-def test_full():
+def test_full(nominal_files: List[str]):
     """Nominal test cases where many files are installed"""
 
     # Proceed with installation in a temporary directory
     with tempfile.TemporaryDirectory() as temp_dir:
         os.chdir(temp_dir)
-
-        # Create a file which is supposed to be replaced by extract_all
-        Path(temp_dir, "part1/action1").mkdir(parents=True, exist_ok=True)
-        Path(temp_dir, "part1/action1/remove_me.txt").touch()
-
-        # Create another file which is supposed to be replaced by extract_items
-        Path(temp_dir, "part2/action3").mkdir(parents=True, exist_ok=True)
-        Path(temp_dir, "part2/action3/remove_me.txt").touch()
 
         # Run the file installation
         files_install.process(
@@ -88,29 +113,110 @@ def test_full():
         )
 
         # Compare final directory content
-        assert sorted(
-            [str(file.relative_to(temp_dir)) for file in Path(temp_dir).rglob("*.*")]
-        ) == [
-            "part1/action1/file1.txt",
-            "part1/action1/file2.txt",
-            "part1/action1/keep1/file1.txt",
-            "part1/action1/keep1/file2.txt",
-            "part1/action1/remove3/file2.txt",
-            "part2/action2/file1.txt",
-            "part2/action2/file2.txt",
-            "part2/action3/file1.json",
-            "part2/action3/file1.txt",
-            "part2/action3/file2.json",
-            "part2/action3/file2.txt",
-            "part4/action2/file4.txt",
-            "part4/file4.txt",
-            "part4/subdir1/action3/file1.txt",
-            "part4/subdir1/action3/file2.txt",
-            "part4/subdir1/action3/keep1/file1.txt",
-            "part4/subdir1/action3/keep1/file2.txt",
-            "part4/subdir1/action3/remove1/file1.txt",
-            "part4/subdir1/action3/remove1/file2.txt",
-            "part4/subdir1/action3/remove2.txt",
-            "part4/subdir1/action3/remove3/file1.txt",
-            "part4/subdir1/action3/remove3/file2.txt",
+        existing_files = [
+            str(file.relative_to(temp_dir)) for file in Path(temp_dir).rglob("*.*")
         ]
+        # compare set and len, since order does not matter
+        assert set(existing_files) == set(nominal_files)
+        assert len(existing_files) == len(nominal_files)
+
+
+def test_assets_already_there_extract_all(nominal_files: List[str]):
+    """Assets have already been installed for extract_all action"""
+
+    # Proceed with installation in a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+
+        # Create a file which is supposed to be replaced by extract_all
+        Path(temp_dir, "part1/action1").mkdir(parents=True, exist_ok=True)
+        Path(temp_dir, "part1/action1/something.txt").touch()
+
+        # Run the file installation
+        files_install.process(
+            str((Path(__file__).parent / "configs" / "full.toml").absolute())
+        )
+
+        # Compare final directory content
+        existing_files = [
+            str(file.relative_to(temp_dir)) for file in Path(temp_dir).rglob("*.*")
+        ]
+        expected_files = [
+            file for file in nominal_files if not file.startswith("part1/action1")
+        ] + ["part1/action1/something.txt"]
+        # compare set and len, since order does not matter
+        assert set(existing_files) == set(expected_files)
+        assert len(existing_files) == len(expected_files)
+
+
+def test_assets_already_there_extract_items(nominal_files: List[str]):
+    """Assets have already been installed for extract_items action"""
+
+    # Proceed with installation in a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+
+        # Create a file which is supposed to be replaced by extract_items
+        Path(temp_dir, "part2/action2").mkdir(parents=True, exist_ok=True)
+        Path(temp_dir, "part2/action2/something.txt").touch()
+
+        # Run the file installation
+        files_install.process(
+            str((Path(__file__).parent / "configs" / "full.toml").absolute())
+        )
+
+        # Compare final directory content
+        existing_files = [
+            str(file.relative_to(temp_dir)) for file in Path(temp_dir).rglob("*.*")
+        ]
+        expected_files = [
+            file for file in nominal_files if not file.startswith("part2/action2")
+        ] + ["part2/action2/something.txt"]
+        # compare set and len, since order does not matter
+        assert set(existing_files) == set(expected_files)
+        assert len(existing_files) == len(expected_files)
+
+
+def test_assets_already_there_get_file(nominal_files: List[str]):
+    """Assets have already been installed for get_file action"""
+
+    # Proceed with installation in a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+
+        # Create a file which is supposed to be replaced by get_file
+        Path(temp_dir, "part4").mkdir(parents=True, exist_ok=True)
+        Path(temp_dir, "part4/file4.txt").touch()
+
+        # Run the file installation
+        files_install.process(
+            str((Path(__file__).parent / "configs" / "full.toml").absolute())
+        )
+
+        # Compare final directory content
+        existing_files = [
+            str(file.relative_to(temp_dir)) for file in Path(temp_dir).rglob("*.*")
+        ]
+        # compare set and len, since order does not matter
+        assert set(existing_files) == set(nominal_files)
+        assert len(existing_files) == len(nominal_files)
+        assert Path(temp_dir, "part4/file4.txt").lstat().st_size == 0
+
+
+def test_execute_after_failure():
+    """Test case where the execute after command is failing"""
+
+    # Proceed with installation in a temporary directory
+    with tempfile.TemporaryDirectory() as temp_dir:
+        os.chdir(temp_dir)
+
+        with pytest.raises(
+            subprocess.CalledProcessError,
+        ):
+            files_install.process(
+                str(
+                    (
+                        Path(__file__).parent / "configs/execute_after_failure.toml"
+                    ).absolute()
+                )
+            )

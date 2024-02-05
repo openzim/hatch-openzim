@@ -1,0 +1,11 @@
+[files.part1.config]
+target_dir="part1"
+
+[files.part1.actions.action1]
+action="extract_all"
+source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
+target_dir="action1"
+remove=["remove1", "remove2.txt", "remove3/file1.txt"]
+execute_after=[
+    "touch somewhere/something.txt"
+]
