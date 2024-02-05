@@ -1,5 +1,6 @@
 import configparser
 import re
+from collections import namedtuple
 from pathlib import Path
 from typing import List
 
@@ -13,12 +14,16 @@ REMOTE_REGEXP = re.compile(
     r"""(?P<repository>.*?)(?:.git)?$"""
 )
 
-DEFAULT_GITHUB_PROJECT_HOMEPAGE = "https://www.kiwix.org"
+GithubInfo = namedtuple("GithubInfo", ["homepage", "organization", "repository"])
+
+DEFAULT_GITHUB_INFO = GithubInfo(
+    homepage="https://www.kiwix.org", organization=None, repository=None
+)
 
 
-def get_github_project_homepage(git_config_path: Path, remote: str = "origin") -> str:
+def get_github_info(git_config_path: Path, remote: str = "origin") -> GithubInfo:
     if not git_config_path.exists() or not git_config_path.is_file():
-        return DEFAULT_GITHUB_PROJECT_HOMEPAGE
+        return DEFAULT_GITHUB_INFO
 
     try:
         config = configparser.ConfigParser()
@@ -27,13 +32,15 @@ def get_github_project_homepage(git_config_path: Path, remote: str = "origin") -
         match = REMOTE_REGEXP.match(git_remote_url)
         if not match:
             raise Exception(f"Unexpected remote url: {git_remote_url}")
-        return (
-            f"https://github.com/{match.group('organization')}/"
-            f"{match.group('repository')}"
+        return GithubInfo(
+            homepage=f"https://github.com/{match.group('organization')}/"
+            f"{match.group('repository')}",
+            organization=match.group("organization"),
+            repository=match.group("repository"),
         )
     except Exception as exc:
         logger.error("Failed to read Github URL", exc_info=exc)
-        return DEFAULT_GITHUB_PROJECT_HOMEPAGE
+        return DEFAULT_GITHUB_INFO
 
 
 def get_python_versions(requires_python: str) -> List[str]:

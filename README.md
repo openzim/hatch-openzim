@@ -38,6 +38,16 @@ dynamic = ["authors", "classifiers", "keywords", "license", "version", "urls"]
 additional-keywords = ["awesome"] # some additional keywords
 kind = "scraper" # indicate this is a scraper, so that additional keywords are added
 
+# Additional author #1
+[[tool.hatch.metadata.hooks.openzim-metadata.additional-authors]]
+name="Bob"
+email="bob@acme.com"
+
+# Additional author #2
+[[tool.hatch.metadata.hooks.openzim-metadata.additional-authors]]
+name="Alice"
+email="alice@acme.com"
+
 # Enable the hatch-openzim build hook to install files (e.g. JS libs) at build time.
 [tool.hatch.build.hooks.openzim-build]
 toml-config = "openzim.toml" # optional location of the configuration file
@@ -52,13 +62,15 @@ NOTA: the `dependencies` attribute is not specific to our hook(s), it is a gener
 
 | Variable | Required | Description |
 |---|---|---|
+| `additional-authors` | N | List of authors that will be appended to the automatic one |
+| `additional-keywords` | N | List of keywords that will be appended to the automatic ones |
+| `kind` | N | If set to `scraper`, scrapers keywords will be automatically added as well |
+| `organization` | N | Override organization (otherwise detected from Github repository to set author and keyword appropriately). Case-insentive. Supported values are `openzim`, `kiwix` and `offspot` |
 | `preserve-authors` | N | Boolean indicating that we do not want to set `authors` metadata but use the ones of `pyproject.toml` |
 | `preserve-classifiers` | N | Boolean indicating that we do not want to set `classifiers` metadata but use the ones of `pyproject.toml` |
 | `preserve-keywords` | N | Boolean indicating that we do not want to set `keywords` metadata but use the ones of `pyproject.toml` |
 | `preserve-license` | N | Boolean indicating that we do not want to set `license` metadata but use the one of `pyproject.toml` |
 | `preserve-urls` | N | Boolean indicating that we do not want to set `urls` metadata but use the ones of `pyproject.toml` |
-| `additional_keywords` | N | List of keywords that will be appended to the automatically added ones |
-| `kind` | N | If set to `scraper`, scrapers keywords will be automatically added as well |
 
 ### Behavior
 
