@@ -208,7 +208,7 @@ Some sub-items in the Zip content can be removed afterwards.
 | `source`| Y | URL of the online ZIP to download |
 | `zip_paths` | Y | List of relative path in ZIP to select |
 | `target_paths` | Y | Relative path of the target directory where selected items will be moved (relative to ZIP home folder) |
-| `remove` | N | List of glob patterns of ZIP content to remove after extraction (must include the target paths, they are relative to the section `target_dir`) |
+| `remove` | N | List of glob patterns of ZIP content to remove after extraction (must include the necessary `target_paths`, they are relative to the section `target_dir`) |
 | `execute_after` | N | List of shell commands to execute once ZIP extraction is completed; actions are executed with the section `target_dir` as current working directory |
 
 Nota:
