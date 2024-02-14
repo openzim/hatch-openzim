@@ -38,6 +38,12 @@ source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
 zip_paths=["keep1/file1.txt"]
 target_paths=["file123.txt"]
 
+[files.part2.actions.action5]
+action="extract_items"
+source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+zip_paths=["keep1/file1.txt"]
+target_paths=["action5/subfolder1/file123.txt"]
+
 # part without any actions
 [files.part3.config]
 target_dir="part3"

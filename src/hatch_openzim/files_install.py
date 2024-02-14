@@ -194,6 +194,8 @@ def _process_extract_items_action(
         for index, zip_path in enumerate(zip_paths):
             item_src = Path(tempdir) / str(zip_path)
             item_dst = base_target_dir / str(target_paths[index])
+            if item_dst.parent and not item_dst.parent.exists():
+                item_dst.parent.mkdir(parents=True, exist_ok=True)
             shutil.move(src=str(item_src), dst=item_dst)
 
     if "remove" in action_data:

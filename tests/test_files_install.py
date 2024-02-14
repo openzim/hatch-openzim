@@ -20,6 +20,7 @@ def nominal_files():
         "part1/somewhere/something.txt",
         "part1/somewhere_else/something.txt",
         "part2/file123.txt",
+        "part2/action5/subfolder1/file123.txt",
         "part2/action2/file1.txt",
         "part2/action2/file2.txt",
         "part2/action3/file1.json",
