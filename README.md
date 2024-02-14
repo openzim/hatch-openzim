@@ -63,6 +63,7 @@ NOTA: the `dependencies` attribute is not specific to our hook(s), it is a gener
 | Variable | Required | Description |
 |---|---|---|
 | `additional-authors` | N | List of authors that will be appended to the automatic one |
+| `additional-classifiers` | N | List of classifiers that will be appended to the automatic ones |
 | `additional-keywords` | N | List of keywords that will be appended to the automatic ones |
 | `kind` | N | If set to `scraper`, scrapers keywords will be automatically added as well |
 | `organization` | N | Override organization (otherwise detected from Github repository to set author and keyword appropriately). Case-insentive. Supported values are `openzim`, `kiwix` and `offspot` |

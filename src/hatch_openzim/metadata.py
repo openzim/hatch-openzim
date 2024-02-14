@@ -60,4 +60,5 @@ def update(root: str, config: dict, metadata: dict):
         ]
         for python_version in get_python_versions(metadata["requires-python"]):
             classifiers.append(f"Programming Language :: Python :: {python_version}")
+        classifiers.extend(config.get("additional-classifiers", []))
         metadata["classifiers"] = classifiers

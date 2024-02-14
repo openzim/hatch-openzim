@@ -129,6 +129,28 @@ def test_metadata_additional_keywords(metadata):
     assert set(metadata["keywords"]) == {"openzim", "keyword1", "keyword2"}
 
 
+def test_metadata_additional_classifiers(metadata):
+    config = {}
+    config["additional-classifiers"] = [
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+    ]
+    update(
+        root=str(Path(os.path.dirname(os.path.abspath(__file__))).parent),
+        config=config,
+        metadata=metadata,
+    )
+    # we compare sets because order is not relevant
+    assert set(metadata["classifiers"]) == {
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+    }
+
+
 def test_metadata_additional_authors(metadata):
     config = {}
     config["additional-authors"] = [{"email": "someone@acme.org", "name": "Some One"}]
