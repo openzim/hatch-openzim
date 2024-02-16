@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "hatch-openzim"
 requires-python = ">=3.8,<3.13"
-description = "Download files at build time"
+description = "openZIM hatch plugin to set metadata automatically and download files at build time"
 readme = "README.md"
 classifiers = [ # needs hatch-openzim 0.2.0 to make it dynamic with additional-classifiers
     "Framework :: Hatch",
@@ -26,6 +26,7 @@ dynamic = ["authors", "keywords", "license", "version", "urls"]
 
 [tool.hatch.metadata.hooks.openzim-metadata]
 additional-keywords = ["hatch","plugin","download","file"]
+preserve-classifiers = true # to be removed once 0.2.0 is used
 
 [project.optional-dependencies]
 scripts = [
