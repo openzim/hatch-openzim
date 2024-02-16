@@ -7,7 +7,7 @@ from typing import Any, Dict, List
 from urllib.request import urlopen
 
 try:
-    import tomllib
+    import tomllib  # pyright: ignore[reportMissingTypeStubs]
 except ImportError:  # pragma: no cover
     import toml as tomllib
 
@@ -190,9 +190,10 @@ def _process_extract_items_action(
         return
 
     with tempfile.TemporaryDirectory() as tempdir:
-        _extract_zip_from_url(url=source, extract_to=tempdir)
+        tempath = Path(tempdir)
+        _extract_zip_from_url(url=source, extract_to=tempath)
         for index, zip_path in enumerate(zip_paths):
-            item_src = Path(tempdir) / str(zip_path)
+            item_src = tempath / str(zip_path)
             item_dst = base_target_dir / str(target_paths[index])
             if item_dst.parent and not item_dst.parent.exists():
                 item_dst.parent.mkdir(parents=True, exist_ok=True)
@@ -213,7 +214,7 @@ def _remove_items(directory: Path, globs: List[str]):
                 shutil.rmtree(match)
 
 
-def _download_file(url, download_to):
+def _download_file(url: str, download_to: Path):
     """downloads a file to a given location"""
     if not url.startswith(("http:", "https:")):
         raise ValueError("URL must start with 'http:' or 'https:'")
@@ -221,7 +222,7 @@ def _download_file(url, download_to):
         file.write(response.read())
 
 
-def _extract_zip_from_url(url, extract_to):
+def _extract_zip_from_url(url: str, extract_to: Path):
     """downloads ZIP from URL and extract in given directory
 
     Nota: the ZIP is temporarily saved on disk (there is no convenient function

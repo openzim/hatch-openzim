@@ -1,18 +1,13 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-openzim"]
 build-backend = "hatchling.build"
 
 [project]
 name = "hatch-openzim"
-authors = [
-  { name = "Kiwix", email = "dev@kiwix.org" },
-]
-keywords = ["hatch","plugin","download","file"]
 requires-python = ">=3.8,<3.13"
 description = "Download files at build time"
 readme = "README.md"
-license = {text = "GPL-3.0-or-later"}
-classifiers = [
+classifiers = [ # needs hatch-openzim 0.2.0 to make it dynamic with additional-classifiers
     "Framework :: Hatch",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
@@ -25,37 +20,36 @@ classifiers = [
 dependencies = [
   "hatchling==1.21.1",
   "packaging==23.2",
-  "toml==0.10.2", # to be replaced by tomllib once only 3.11 and above is supported
+  "toml==0.10.2", # to be removed once only 3.11 and above is supported
 ]
-dynamic = ["version"]
+dynamic = ["authors", "keywords", "license", "version", "urls"]
+
+[tool.hatch.metadata.hooks.openzim-metadata]
+additional-keywords = ["hatch","plugin","download","file"]
 
 [project.optional-dependencies]
 scripts = [
   "invoke==2.2.0",
 ]
 lint = [
-  "black==24.1.1",
-  "ruff==0.2.0",
+  "black==24.2.0",
+  "ruff==0.2.1",
 ]
 check = [
-  "pyright==1.1.349",
+  "pyright==1.1.350",
 ]
 test = [
   "pytest==8.0.0",
   "coverage==7.4.1",
 ]
 dev = [
-  "pre-commit==3.6.0",
-  "debugpy==1.8.0",
+  "pre-commit==3.6.1",
+  "debugpy==1.8.1",
   "hatch-openzim[scripts]",
   "hatch-openzim[lint]",
   "hatch-openzim[test]",
   "hatch-openzim[check]",
 ]
-
-[project.urls]
-Homepage = "https://github.com/openzim/hatch-openzim"
-Donate = "https://www.kiwix.org/en/support-us/"
 
 [project.entry-points.hatch]
 openzim = "hatch_openzim.hooks"
@@ -239,4 +233,5 @@ include = ["src", "tests", "tasks.py"]
 exclude = [".env/**", ".venv/**"]
 extraPaths = ["src"]
 pythonVersion = "3.8"
-typeCheckingMode="basic"
+typeCheckingMode="strict"
+disableBytesTypePromotions = true

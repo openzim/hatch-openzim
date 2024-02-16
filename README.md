@@ -13,6 +13,10 @@ This provides a [Hatch](https://pypi.org/project/hatch/)(ling) plugin for common
 
 This plugin intentionally has few dependencies, using the Python standard library whenever possible and hence limiting footprint to a minimum.
 
+hatch-openzim adheres to openZIM's [Contribution Guidelines](https://github.com/openzim/overview/wiki/Contributing).
+
+hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/docs/Policy.md) **v1.0.0**.
+
 ## Quick start
 
 Assuming you have an openZIM project, you could use such a configuration in your `pyproject.toml`

@@ -1,7 +1,7 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Dict, List, Union
+from typing import Any, Dict, List, Union
 
 import pytest
 
@@ -131,7 +131,7 @@ def test_metadata_preserve_value(
     metadata: Metadata, metadata_key: str, root_folder: str
 ):
     metadata[metadata_key] = f"some_value_for_{metadata_key}"
-    config = {}
+    config: Dict[str, Any] = {}
     config[f"preserve-{metadata_key}"] = True
     update(
         root=root_folder,
@@ -142,7 +142,7 @@ def test_metadata_preserve_value(
 
 
 def test_metadata_additional_keywords(metadata: Metadata, root_folder: str):
-    config = {}
+    config: Dict[str, Any] = {}
     config["additional-keywords"] = ["keyword1", "keyword2"]
     update(
         root=root_folder,
@@ -154,7 +154,7 @@ def test_metadata_additional_keywords(metadata: Metadata, root_folder: str):
 
 
 def test_metadata_additional_classifiers(metadata: Metadata, root_folder: str):
-    config = {}
+    config: Dict[str, Any] = {}
     config["additional-classifiers"] = [
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -176,7 +176,7 @@ def test_metadata_additional_classifiers(metadata: Metadata, root_folder: str):
 
 
 def test_metadata_additional_authors(metadata: Metadata, root_folder: str):
-    config = {}
+    config: Dict[str, Any] = {}
     config["additional-authors"] = [{"email": "someone@acme.org", "name": "Some One"}]
     update(
         root=root_folder,
@@ -203,9 +203,9 @@ def test_metadata_additional_authors(metadata: Metadata, root_folder: str):
     ],
 )
 def test_metadata_organization(
-    organization: str, expected_result: str, metadata, root_folder: str
+    organization: str, expected_result: str, metadata: Metadata, root_folder: str
 ):
-    config = {}
+    config: Dict[str, Any] = {}
     if organization:
         config["organization"] = organization
     update(
@@ -224,7 +224,7 @@ def test_metadata_organization(
 
 
 def test_metadata_is_scraper(metadata: Metadata, root_folder: str):
-    config = {}
+    config: Dict[str, Any] = {}
     config["kind"] = "scraper"
     update(
         root=root_folder,

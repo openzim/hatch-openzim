@@ -1,9 +1,10 @@
 from pathlib import Path
+from typing import Any, Dict
 
 from hatch_openzim.utils import get_github_info, get_python_versions
 
 
-def update(root: str, config: dict, metadata: dict):
+def update(root: str, config: Dict[str, Any], metadata: Dict[str, Any]):
     """Update the project table's metadata."""
 
     # Check for absence of metadata we will set + presence in the dynamic property
