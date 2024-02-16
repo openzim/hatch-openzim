@@ -23,6 +23,17 @@ def dynamic_metadata() -> List[str]:
 
 @pytest.fixture
 def root_folder(tmp_path: Path) -> str:
+    """
+    Returns a "virtual" root folder with a "virtual" git config
+
+    Git config comes from the tests/configs/gitconfig file
+
+    This is necessary to ensure tests run always with the same git configuration file,
+    to avoid variability coming from:
+    - tests ran on plain files (not linked to any git repo)
+    - tests ran on a repository fork (e.g myuser/hatch-openzim)
+    - tests ran with a different remote (nothing forces main remote to be named origin)
+    """
     git_folder = tmp_path / ".git"
     git_folder.mkdir()
     shutil.copy(
