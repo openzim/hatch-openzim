@@ -20,6 +20,7 @@ def nominal_files():
         "part1/somewhere/something.txt",
         "part1/somewhere_else/something.txt",
         "part2/file123.txt",
+        "part2/action5/subfolder1/file123.txt",
         "part2/action2/file1.txt",
         "part2/action2/file2.txt",
         "part2/action3/file1.json",
@@ -52,7 +53,7 @@ def test_no_arg():
         ("other_stuff.toml"),
     ],
 )
-def test_ignored_silently(config_file):
+def test_ignored_silently(config_file: str):
     """Test cases where the config file is passed but there is no relevant content"""
     files_install.process(
         str((Path(__file__).parent / "configs" / config_file).absolute())

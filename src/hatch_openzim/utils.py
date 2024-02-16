@@ -1,8 +1,7 @@
 import configparser
 import re
-from collections import namedtuple
 from pathlib import Path
-from typing import List
+from typing import List, NamedTuple, Optional
 
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
@@ -14,7 +13,12 @@ REMOTE_REGEXP = re.compile(
     r"""(?P<repository>.*?)(?:.git)?$"""
 )
 
-GithubInfo = namedtuple("GithubInfo", ["homepage", "organization", "repository"])
+
+class GithubInfo(NamedTuple):
+    homepage: str
+    organization: Optional[str]
+    repository: Optional[str]
+
 
 DEFAULT_GITHUB_INFO = GithubInfo(
     homepage="https://www.kiwix.org", organization=None, repository=None
@@ -57,8 +61,8 @@ def get_python_versions(requires_python: str) -> List[str]:
     last_py1_minor = 6
     last_py2_minor = 7
 
-    major_versions = []
-    minor_versions = []
+    major_versions: list[str] = []
+    minor_versions: list[str] = []
     for major in range(1, 10):  # this will work up to Python 10 ...
         major_added = False
         last_minor = 100  # this supposes we will never have Python x.100

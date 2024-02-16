@@ -1,7 +1,7 @@
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List
+from typing import Any, Callable, Generator, List
 
 import pytest
 
@@ -9,7 +9,7 @@ from hatch_openzim.utils import GithubInfo, get_github_info, get_python_versions
 
 
 @pytest.fixture
-def mock_git_config():
+def mock_git_config() -> Generator[Callable[[str, str], Any], None, None]:
     @contextmanager
     def _mock_git_config(git_origin_url: str, remote_name: str = "origin"):
         with tempfile.NamedTemporaryFile() as temp_file:
@@ -55,11 +55,11 @@ def mock_git_config():
     ],
 )
 def test_get_github_project_homepage_valid_url(
-    mock_git_config,
-    git_url,
-    expected_homepage_url,
-    expected_organization,
-    expected_repository,
+    mock_git_config: Callable[[str], Any],
+    git_url: str,
+    expected_homepage_url: str,
+    expected_organization: str,
+    expected_repository: str,
 ):
     with mock_git_config(git_url) as git_config_path:
         assert get_github_info(git_config_path=git_config_path) == GithubInfo(
@@ -69,7 +69,7 @@ def test_get_github_project_homepage_valid_url(
         )
 
 
-def test_get_github_project_homepage_invalid_url(mock_git_config):
+def test_get_github_project_homepage_invalid_url(mock_git_config: Callable[[str], Any]):
     # Test the function with an invalid URL
     with mock_git_config("http://github.com/oneuser/onerepo.git") as git_config_path:
         assert get_github_info(git_config_path=git_config_path) == GithubInfo(
@@ -84,10 +84,12 @@ def test_get_github_project_missing_git_config():
     )
 
 
-def test_get_github_project_homepage_invalid_remote(mock_git_config):
+def test_get_github_project_homepage_invalid_remote(
+    mock_git_config: Callable[[str, str], Any],
+):
     # Test the function with an invalid URL
     with mock_git_config(
-        "https://github.com/oneuser/onerepo.git", remote_name="origin2"
+        "https://github.com/oneuser/onerepo.git", "origin2"
     ) as git_config_path:
         assert get_github_info(git_config_path=git_config_path) == GithubInfo(
             homepage="https://www.kiwix.org", organization=None, repository=None

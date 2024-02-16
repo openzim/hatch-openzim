@@ -13,6 +13,10 @@ This provides a [Hatch](https://pypi.org/project/hatch/)(ling) plugin for common
 
 This plugin intentionally has few dependencies, using the Python standard library whenever possible and hence limiting footprint to a minimum.
 
+hatch-openzim adheres to openZIM's [Contribution Guidelines](https://github.com/openzim/overview/wiki/Contributing).
+
+hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/docs/Policy.md) **v1.0.0**.
+
 ## Quick start
 
 Assuming you have an openZIM project, you could use such a configuration in your `pyproject.toml`
@@ -63,6 +67,7 @@ NOTA: the `dependencies` attribute is not specific to our hook(s), it is a gener
 | Variable | Required | Description |
 |---|---|---|
 | `additional-authors` | N | List of authors that will be appended to the automatic one |
+| `additional-classifiers` | N | List of classifiers that will be appended to the automatic ones |
 | `additional-keywords` | N | List of keywords that will be appended to the automatic ones |
 | `kind` | N | If set to `scraper`, scrapers keywords will be automatically added as well |
 | `organization` | N | Override organization (otherwise detected from Github repository to set author and keyword appropriately). Case-insentive. Supported values are `openzim`, `kiwix` and `offspot` |
@@ -208,7 +213,7 @@ Some sub-items in the Zip content can be removed afterwards.
 | `source`| Y | URL of the online ZIP to download |
 | `zip_paths` | Y | List of relative path in ZIP to select |
 | `target_paths` | Y | Relative path of the target directory where selected items will be moved (relative to ZIP home folder) |
-| `remove` | N | List of glob patterns of ZIP content to remove after extraction (must include the target paths, they are relative to the section `target_dir`) |
+| `remove` | N | List of glob patterns of ZIP content to remove after extraction (must include the necessary `target_paths`, they are relative to the section `target_dir`) |
 | `execute_after` | N | List of shell commands to execute once ZIP extraction is completed; actions are executed with the section `target_dir` as current working directory |
 
 Nota:
