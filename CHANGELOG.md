@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Build hook: fix issue with extract_items when target_path is in a subfolder #11
+- Tests: ensure tests are also ok when ran from a fork or outside any Git structure
 
 ## [0.1.0] - 2024-02-05
 
