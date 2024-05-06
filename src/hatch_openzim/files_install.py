@@ -109,7 +109,7 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
     """execute actions after file(s) installation"""
 
     for action in actions:
-        logger.info(f"    Executing '{action}'")
+        logger.info(f"  Executing '{action}'")
         process = subprocess.run(
             action,
             shell=True,  # noqa: S602 # nosec: B602
