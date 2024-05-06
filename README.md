@@ -15,7 +15,7 @@ This plugin intentionally has few dependencies, using the Python standard librar
 
 hatch-openzim adheres to openZIM's [Contribution Guidelines](https://github.com/openzim/overview/wiki/Contributing).
 
-hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/docs/Policy.md) **v1.0.0**.
+hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/blob/main/docs/Policy.md) **v1.0.1**.
 
 ## Quick start
 
