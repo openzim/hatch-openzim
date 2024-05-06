@@ -1,5 +1,4 @@
 import os
-import subprocess
 import tempfile
 from pathlib import Path
 from typing import List
@@ -212,7 +211,7 @@ def test_execute_after_failure():
         os.chdir(temp_dir)
 
         with pytest.raises(
-            subprocess.CalledProcessError,
+            Exception, match="execute_after command failed, see logs above for details."
         ):
             files_install.process(
                 str(
