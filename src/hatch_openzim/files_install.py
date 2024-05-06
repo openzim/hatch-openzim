@@ -109,17 +109,19 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
     """execute actions after file(s) installation"""
 
     for action in actions:
-        logger.info(f"    Executing '{action}'")
-        process = subprocess.run(
+        logger.info(f"  Executing '{action}'")
+        process = subprocess.run(  # noqa: PLW1510
             action,
             shell=True,  # noqa: S602 # nosec: B602
             cwd=base_target_dir,
             text=True,
-            check=True,
-            capture_output=True,
+            stderr=subprocess.STDOUT,
+            stdout=subprocess.PIPE,
         )
         if process.stdout:
-            logger.info(f"      stdout:\n{process.stdout}")
+            logger.info(f"      stdout/stderr:\n{process.stdout}")
+        if process.returncode:
+            raise Exception("execute_after command failed, see logs above for details.")
 
 
 def _process_get_file_action(
