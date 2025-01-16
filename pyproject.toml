@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-openzim"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
@@ -12,13 +12,26 @@ dependencies = [
   "packaging==24.2",
   "toml==0.10.2", # to be removed once only 3.11 and above is supported
 ]
-dynamic = ["authors", "keywords", "license", "version", "urls", "classifiers"]
-
-[tool.hatch.metadata.hooks.openzim-metadata]
-additional-keywords = ["hatch","plugin","download","file"]
-additional-classifiers = [
-  "Framework :: Hatch",
+authors = [
+  { "name" = "openZIM", "email" = "dev@openzim.org"},
 ]
+keywords = ["hatch","plugin","download","file"]
+license = {text = "GPL-3.0-or-later"}
+classifiers = [
+    "Framework :: Hatch",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+dynamic = ["version"]
+
+[project.urls]
+Donate = "https://www.kiwix.org/en/support-us/"
+Homepage = "https://github.com/openzim/hatch-openzim"
 
 [project.optional-dependencies]
 scripts = [
