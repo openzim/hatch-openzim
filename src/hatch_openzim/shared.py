@@ -11,6 +11,5 @@ logger.setLevel(logging.DEBUG)
 # setup console logging
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.setFormatter(logging.Formatter(DEFAULT_FORMAT))
-log_level = logging.getLevelName(os.getenv("HATCH_OPENZIM_LOG_LEVEL", "INFO"))
-console_handler.setLevel(log_level)
+console_handler.setLevel(os.getenv("HATCH_OPENZIM_LOG_LEVEL", "INFO"))
 logger.addHandler(console_handler)
