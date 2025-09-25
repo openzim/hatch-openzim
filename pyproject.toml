@@ -8,9 +8,9 @@ requires-python = ">=3.9,<3.14"
 description = "openZIM hatch plugin to set metadata automatically and download files at build time"
 readme = "README.md"
 dependencies = [
-  "hatchling==1.27.0",
-  "packaging==24.2",
-  "toml==0.10.2", # to be removed once only 3.11 and above is supported
+  "hatchling>=1.27.0,<2",
+  "packaging>=24.2,<26",
+  "toml>=0.10", # to be removed once only 3.11 and above is supported
 ]
 authors = [
   { "name" = "openZIM", "email" = "dev@openzim.org"},
