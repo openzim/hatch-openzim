@@ -1,7 +1,6 @@
 import os
 import tempfile
 from pathlib import Path
-from typing import List
 
 import pytest
 
@@ -100,7 +99,7 @@ def test_errors(config_file: str, exception_message: str):
         )
 
 
-def test_full(nominal_files: List[str]):
+def test_full(nominal_files: list[str]):
     """Nominal test cases where many files are installed"""
 
     # Proceed with installation in a temporary directory
@@ -121,7 +120,7 @@ def test_full(nominal_files: List[str]):
         assert len(existing_files) == len(nominal_files)
 
 
-def test_assets_already_there_extract_all(nominal_files: List[str]):
+def test_assets_already_there_extract_all(nominal_files: list[str]):
     """Assets have already been installed for extract_all action"""
 
     # Proceed with installation in a temporary directory
@@ -149,7 +148,7 @@ def test_assets_already_there_extract_all(nominal_files: List[str]):
         assert len(existing_files) == len(expected_files)
 
 
-def test_assets_already_there_extract_items(nominal_files: List[str]):
+def test_assets_already_there_extract_items(nominal_files: list[str]):
     """Assets have already been installed for extract_items action"""
 
     # Proceed with installation in a temporary directory
@@ -177,7 +176,7 @@ def test_assets_already_there_extract_items(nominal_files: List[str]):
         assert len(existing_files) == len(expected_files)
 
 
-def test_assets_already_there_get_file(nominal_files: List[str]):
+def test_assets_already_there_get_file(nominal_files: list[str]):
     """Assets have already been installed for get_file action"""
 
     # Proceed with installation in a temporary directory
@@ -211,7 +210,8 @@ def test_execute_after_failure():
         os.chdir(temp_dir)
 
         with pytest.raises(
-            Exception, match="execute_after command failed, see logs above for details."
+            Exception,
+            match=r"execute\_after command failed, see logs above for details.",
         ):
             files_install.process(
                 str(

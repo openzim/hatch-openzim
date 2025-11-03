@@ -1,7 +1,7 @@
 import configparser
 import re
 from pathlib import Path
-from typing import List, NamedTuple, Optional
+from typing import NamedTuple
 
 from packaging.specifiers import SpecifierSet
 from packaging.version import Version
@@ -16,8 +16,8 @@ REMOTE_REGEXP = re.compile(
 
 class GithubInfo(NamedTuple):
     homepage: str
-    organization: Optional[str]
-    repository: Optional[str]
+    organization: str | None
+    repository: str | None
 
 
 DEFAULT_GITHUB_INFO = GithubInfo(
@@ -47,7 +47,7 @@ def get_github_info(git_config_path: Path, remote: str = "origin") -> GithubInfo
         return DEFAULT_GITHUB_INFO
 
 
-def get_python_versions(requires_python: str) -> List[str]:
+def get_python_versions(requires_python: str) -> list[str]:
     """
     Returns the list of major and major.minor versions compatible with the specifier
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
@@ -16,7 +16,7 @@ class OpenzimBuildHook(
 
     PLUGIN_NAME = "openzim-build"
 
-    def initialize(self, version: str, build_data: Dict[str, Any]):  # noqa: ARG002
+    def initialize(self, version: str, build_data: dict[str, Any]):  # noqa: ARG002
         if "toml-config" in self.config:
             process_files_install(openzim_toml_location=self.config["toml-config"])
         else:

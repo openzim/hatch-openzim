@@ -1,7 +1,8 @@
 import tempfile
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Generator, List
+from typing import Any
 
 import pytest
 
@@ -113,7 +114,7 @@ def test_get_github_project_homepage_invalid_remote(
         ),
     ],
 )
-def test_get_python_versions_ok(requires_python: str, expected_versions: List[str]):
+def test_get_python_versions_ok(requires_python: str, expected_versions: list[str]):
     python_versions = get_python_versions(requires_python)
     # we compare sets because order does not matter
     assert set(python_versions) == set(expected_versions)
