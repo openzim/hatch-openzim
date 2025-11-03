@@ -1,17 +1,17 @@
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any
 
 import pytest
 
 from hatch_openzim.metadata import update
 
-Metadata = Dict[str, Union[str, List[str]]]
+Metadata = dict[str, str | list[str]]
 
 
 @pytest.fixture
-def dynamic_metadata() -> List[str]:
+def dynamic_metadata() -> list[str]:
     return [
         "authors",
         "classifiers",
@@ -45,7 +45,7 @@ def root_folder(tmp_path: Path) -> str:
 
 
 @pytest.fixture
-def metadata(dynamic_metadata: List[str]) -> Metadata:
+def metadata(dynamic_metadata: list[str]) -> Metadata:
     return {
         "requires-python": ">=3.10,<3.12",
         "dynamic": dynamic_metadata,
@@ -87,7 +87,7 @@ def test_metadata_nominal(metadata: Metadata, root_folder: str):
 def test_metadata_missing_dynamic(
     metadata: Metadata, metadata_key: str, root_folder: str
 ):
-    assert isinstance(metadata["dynamic"], List)
+    assert isinstance(metadata["dynamic"], list)
     assert all(isinstance(item, str) for item in metadata["dynamic"])
     metadata["dynamic"].remove(metadata_key)
     with pytest.raises(
@@ -142,7 +142,7 @@ def test_metadata_preserve_value(
     metadata: Metadata, metadata_key: str, root_folder: str
 ):
     metadata[metadata_key] = f"some_value_for_{metadata_key}"
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config[f"preserve-{metadata_key}"] = True
     update(
         root=root_folder,
@@ -153,7 +153,7 @@ def test_metadata_preserve_value(
 
 
 def test_metadata_additional_keywords(metadata: Metadata, root_folder: str):
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config["additional-keywords"] = ["keyword1", "keyword2"]
     update(
         root=root_folder,
@@ -165,7 +165,7 @@ def test_metadata_additional_keywords(metadata: Metadata, root_folder: str):
 
 
 def test_metadata_additional_classifiers(metadata: Metadata, root_folder: str):
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config["additional-classifiers"] = [
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -187,7 +187,7 @@ def test_metadata_additional_classifiers(metadata: Metadata, root_folder: str):
 
 
 def test_metadata_additional_authors(metadata: Metadata, root_folder: str):
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config["additional-authors"] = [{"email": "someone@acme.org", "name": "Some One"}]
     update(
         root=root_folder,
@@ -216,7 +216,7 @@ def test_metadata_additional_authors(metadata: Metadata, root_folder: str):
 def test_metadata_organization(
     organization: str, expected_result: str, metadata: Metadata, root_folder: str
 ):
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     if organization:
         config["organization"] = organization
     update(
@@ -235,7 +235,7 @@ def test_metadata_organization(
 
 
 def test_metadata_is_scraper(metadata: Metadata, root_folder: str):
-    config: Dict[str, Any] = {}
+    config: dict[str, Any] = {}
     config["kind"] = "scraper"
     update(
         root=root_folder,

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from hatchling.metadata.plugin.interface import MetadataHookInterface
 
@@ -14,7 +14,7 @@ class OpenzimMetadataHook(MetadataHookInterface):
 
     PLUGIN_NAME = "openzim-metadata"
 
-    def update(self, metadata: Dict[str, Any]):
+    def update(self, metadata: dict[str, Any]):
         """Update the project table's metadata."""
         update(
             root=self.root,

@@ -3,7 +3,7 @@ import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from urllib.request import urlopen
 
 try:
@@ -40,7 +40,7 @@ def process(openzim_toml_location: str = DEFAULT_OPENZIM_TOML_LOCATION):
         _process_section(section_name=section_name, section_data=section_data)
 
 
-def _process_section(section_name: str, section_data: Dict[str, Any]):
+def _process_section(section_name: str, section_data: dict[str, Any]):
     """processes all actions required for one section (i.e. one target folder)"""
 
     logger.info(f"Processing {section_name} section")
@@ -69,7 +69,7 @@ def _process_section(section_name: str, section_data: Dict[str, Any]):
 
 
 def _process_one_action(
-    base_target_dir: Path, action_name: str, action_data: Dict[str, Any]
+    base_target_dir: Path, action_name: str, action_data: dict[str, Any]
 ):
     """processes one action (basically trigger the right kind of action)"""
     logger.info(f"  Processing {action_name} action")
@@ -105,7 +105,7 @@ def _process_one_action(
     logger.info("    Done")
 
 
-def _process_execute_after(base_target_dir: Path, actions: List[str]):
+def _process_execute_after(base_target_dir: Path, actions: list[str]):
     """execute actions after file(s) installation"""
 
     for action in actions:
@@ -125,7 +125,7 @@ def _process_execute_after(base_target_dir: Path, actions: List[str]):
 
 
 def _process_get_file_action(
-    base_target_dir: Path, source: str, action_data: Dict[str, Any]
+    base_target_dir: Path, source: str, action_data: dict[str, Any]
 ):
     """downloads one file to a given location"""
     target_file = action_data.get("target_file", None)
@@ -144,7 +144,7 @@ def _process_get_file_action(
 
 
 def _process_extract_all_action(
-    base_target_dir: Path, source: str, action_data: Dict[str, Any]
+    base_target_dir: Path, source: str, action_data: dict[str, Any]
 ):
     """extacts all Zip content to a given location
 
@@ -165,7 +165,7 @@ def _process_extract_all_action(
 
 
 def _process_extract_items_action(
-    base_target_dir: Path, source: str, action_data: Dict[str, Any]
+    base_target_dir: Path, source: str, action_data: dict[str, Any]
 ):
     """extacts some items of a content to some given locations
 
@@ -205,7 +205,7 @@ def _process_extract_items_action(
         _remove_items(globs=action_data["remove"], directory=base_target_dir)
 
 
-def _remove_items(directory: Path, globs: List[str]):
+def _remove_items(directory: Path, globs: list[str]):
     """removes all files in directory matching one of the provided glob patterns"""
     for pattern in globs:
         matches = directory.glob(pattern)
