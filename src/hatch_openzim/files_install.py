@@ -4,7 +4,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 from typing import Any
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 try:
     import tomllib  # pyright: ignore[reportMissingTypeStubs]
@@ -220,7 +220,12 @@ def _download_file(url: str, download_to: Path):
     """downloads a file to a given location"""
     if not url.startswith(("http:", "https:")):
         raise ValueError("URL must start with 'http:' or 'https:'")
-    with urlopen(url) as response, open(download_to, "wb") as file:  # noqa: S310
+    req = Request(  # noqa: S310
+        url,
+        # explain we are compatible with "Mozilla"
+        headers={"User-Agent": "Mozilla/5.0"},
+    )
+    with urlopen(req) as response, open(download_to, "wb") as file:  # noqa: S310
         file.write(response.read())
 
 
