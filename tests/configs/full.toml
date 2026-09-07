@@ -7,7 +7,7 @@ execute_after=[
 
 [files.part1.actions.action1]
 action="extract_all"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset1.zip"
 target_dir="action1"
 remove=["remove1", "remove2.txt", "remove3/file1.txt"]
 execute_after=[
@@ -21,26 +21,26 @@ target_dir="part2"
 
 [files.part2.actions.action2]
 action="extract_items"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset2.zip"
 zip_paths=["keep1"]
 target_paths=["action2"]
 remove=["action2/*.json"]
 
 [files.part2.actions.action3]
 action="extract_items"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset2.zip"
 zip_paths=["keep1"]
 target_paths=["action3"]
 
 [files.part2.actions.action4]
 action="extract_items"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset2.zip"
 zip_paths=["keep1/file1.txt"]
 target_paths=["file123.txt"]
 
 [files.part2.actions.action5]
 action="extract_items"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset2.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset2.zip"
 zip_paths=["keep1/file1.txt"]
 target_paths=["action5/subfolder1/file123.txt"]
 
@@ -53,16 +53,16 @@ target_dir="part4"
 
 [files.part4.actions.action1]
 action="get_file"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/file1.txt"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/file1.txt"
 target_file="file4.txt"
 
 [files.part4.actions.action2]
 action="get_file"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/file1.txt"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/file1.txt"
 target_file="file4.txt"
 target_dir="action2"
 
 [files.part4.actions.action3]
 action="extract_all"
-source="https://tmp.kiwix.org/ci/hatch_openzim_testsets/testset1.zip"
+source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset1.zip"
 target_dir="subdir1/action3"
