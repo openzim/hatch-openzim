@@ -9,7 +9,7 @@ description = "openZIM hatch plugin to set metadata automatically and download f
 readme = "README.md"
 dependencies = [
   "hatchling>=1.27.0,<2",
-  "packaging>=24.2,<26",
+  "packaging>=24.2,<27",
   "toml>=0.10", # to be removed once only 3.11 and above is supported
 ]
 authors = [
@@ -35,26 +35,22 @@ Homepage = "https://github.com/openzim/hatch-openzim"
 
 [project.optional-dependencies]
 scripts = [
-  "invoke==2.2.1",
+  "invoke==3.0.3",
 ]
-lint = [
-  "black==25.9.0",
-  "ruff==0.14.3",
-]
-check = [
-  "pyright==1.1.407",
+qa = [
+  "ruff==0.16.6",
+  "pyright==1.1.411",
 ]
 test = [
-  "pytest==8.4.2",
-  "coverage==7.11.0",
+  "pytest==9.1.1",
+  "coverage==7.16.0",
 ]
 dev = [
-  "pre-commit==4.3.0",
-  "debugpy==1.8.17",
+  "pre-commit==4.6.2",
+  "debugpy==1.8.21",
   "hatch-openzim[scripts]",
-  "hatch-openzim[lint]",
+  "hatch-openzim[qa]",
   "hatch-openzim[test]",
-  "hatch-openzim[check]",
 ]
 
 [project.entry-points.hatch]
@@ -87,29 +83,19 @@ report-cov = "inv report-cov"
 coverage = "inv coverage --args '{args}'"
 html = "inv coverage --html --args '{args}'"
 
-[tool.hatch.envs.lint]
-template = "lint"
+[tool.hatch.envs.qa]
+template = "qa"
 skip-install = false
-features = ["scripts", "lint"]
+features = ["scripts", "qa", "test"]
 
-[tool.hatch.envs.lint.scripts]
-black = "inv lint-black --args '{args}'"
-ruff = "inv lint-ruff --args '{args}'"
-all = "inv lintall --args '{args}'"
-fix-black = "inv fix-black --args '{args}'"
-fix-ruff = "inv fix-ruff --args '{args}'"
-fixall = "inv fixall --args '{args}'"
-
-[tool.hatch.envs.check]
-features = ["scripts", "check"]
-
-[tool.hatch.envs.check.scripts]
-pyright = "inv check-pyright --args '{args}'"
-all = "inv checkall --args '{args}'"
-
-[tool.black]
-line-length = 88
-target-version = ['py310']
+[tool.hatch.envs.qa.scripts]
+check-lint = "inv check-lint --args '{args}'"
+check-format = "inv check-format --args '{args}'"
+check-type = "inv check-type --args '{args}'"
+check-all = "inv check-all --args '{args}'"
+fix-format = "inv fix-format --args '{args}'"
+fix-lint = "inv fix-lint --args '{args}'"
+fix-all = "inv fix-all --args '{args}'"
 
 [tool.ruff]
 target-version = "py310"

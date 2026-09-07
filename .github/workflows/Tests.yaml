@@ -15,10 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
           architecture: x64
@@ -33,17 +33,18 @@ jobs:
 
       - name: Upload coverage report to codecov
         if: matrix.python == '3.12'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
+          fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}
 
   build_python:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version-file: pyproject.toml
           architecture: x64

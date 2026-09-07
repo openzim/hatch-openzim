@@ -5,4 +5,3 @@ target_dir="part1"
 [files.part1.actions.action1]
 action="extract_all"
 target_dir="action1"
-

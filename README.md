@@ -6,6 +6,8 @@ hatch-openzim
 [![CodeFactor](https://www.codefactor.io/repository/github/openzim/hatch-openzim/badge)](https://www.codefactor.io/repository/github/openzim/hatch-openzim)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![codecov](https://codecov.io/gh/openzim/hatch-openzim/branch/main/graph/badge.svg)](https://codecov.io/gh/openzim/hatch-openzim)
+[![PyPI version shields.io](https://img.shields.io/pypi/v/hatch-openzim.svg)](https://pypi.org/project/hatch-openzim/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/hatch-openzim.svg)](https://pypi.org/project/hatch-openzim)
 
 This provides a [Hatch](https://pypi.org/project/hatch/)(ling) plugin for common openZIM operations:
 - automatically populate common project metadatas
@@ -15,7 +17,7 @@ This plugin intentionally has few dependencies, using the Python standard librar
 
 hatch-openzim adheres to openZIM's [Contribution Guidelines](https://github.com/openzim/overview/wiki/Contributing).
 
-hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/blob/main/docs/Policy.md) **v1.0.1**.
+hatch-openzim has implemented openZIM's [Python bootstrap, conventions and policies](https://github.com/openzim/_python-bootstrap/blob/main/docs/Policy.md) **v2.0.0**.
 
 ## Quick start
 
