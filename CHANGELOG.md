@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade dependencies (invoke, black, ruff, pyright, pytest, coverage, pre-commit, debugpy, GitHub Actions) (#31)
+- Upgrade dependencies (invoke, black, ruff, pyright, pytest, coverage, pre-commit, debugpy, GitHub Actions) and to openZIM's Python bootstrap, conventions and policies v2.0.0 (#31)
 
 ## [0.2.5] - 2025-12-02
 
