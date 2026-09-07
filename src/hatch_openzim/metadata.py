@@ -1,4 +1,5 @@
 from pathlib import Path
+from shutil import copy2
 from typing import Any
 
 from hatch_openzim.utils import get_github_info, get_python_versions
@@ -63,3 +64,9 @@ def update(root: str, config: dict[str, Any], metadata: dict[str, Any]):
             classifiers.append(f"Programming Language :: Python :: {python_version}")
         classifiers.extend(config.get("additional-classifiers", []))
         metadata["classifiers"] = classifiers
+
+    if config.get("readme", ""):
+        # copy README from arbitrary location to local README.md ; ensures sdist
+        # contains expected README file
+        copy2(Path(root) / config["readme"], Path(root) / "README.md")
+        metadata["readme"] = "README.md"

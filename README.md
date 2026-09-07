@@ -76,6 +76,7 @@ NOTA: the `dependencies` attribute is not specific to our hook(s), it is a gener
 | `preserve-keywords` | N | Boolean indicating that we do not want to set `keywords` metadata but use the ones of `pyproject.toml` |
 | `preserve-license` | N | Boolean indicating that we do not want to set `license` metadata but use the one of `pyproject.toml` |
 | `preserve-urls` | N | Boolean indicating that we do not want to set `urls` metadata but use the ones of `pyproject.toml` |
+| `readme` | N | Fetch README from given location (e.g. ../README) |
 
 ### Behavior
 
