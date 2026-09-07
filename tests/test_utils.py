@@ -15,8 +15,7 @@ def mock_git_config() -> Generator[Callable[[str, str], Any], None, None]:
     def _mock_git_config(git_origin_url: str, remote_name: str = "origin"):
         with tempfile.NamedTemporaryFile() as temp_file:
             git_config = Path(temp_file.name)
-            git_config.write_text(
-                f"""
+            git_config.write_text(f"""
 [core]
         repositoryformatversion = 0
         filemode = true
@@ -25,8 +24,7 @@ def mock_git_config() -> Generator[Callable[[str, str], Any], None, None]:
 [remote "{remote_name}"]
         url = {git_origin_url}
         fetch = +refs/heads/*:refs/remotes/origin/*
-"""
-            )
+""")
             yield git_config
 
     yield _mock_git_config
