@@ -4,5 +4,5 @@ target_dir="part1"
 
 [files.part1.actions.action1]
 action="extract_items"
-source="https://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset2.zip"
+source="https://dev.kiwix.org/hatch-openzim/testset2.zip"
 target_paths=["action1"]

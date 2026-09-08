@@ -234,6 +234,22 @@ def test_metadata_organization(
         raise Exception(f"Unexpected expected result: {expected_result}")
 
 
+def test_metadata_readme(metadata: Metadata, root_folder: str):
+    readme_content = "# Some project\n\nSome description.\n"
+    Path(root_folder, "docs").mkdir()
+    Path(root_folder, "docs/README_SOURCE.md").write_text(readme_content)
+
+    config: dict[str, Any] = {"readme": "docs/README_SOURCE.md"}
+    update(
+        root=root_folder,
+        config=config,
+        metadata=metadata,
+    )
+
+    assert metadata["readme"] == "README.md"
+    assert Path(root_folder, "README.md").read_text() == readme_content
+
+
 def test_metadata_is_scraper(metadata: Metadata, root_folder: str):
     config: dict[str, Any] = {}
     config["kind"] = "scraper"
