@@ -4,5 +4,5 @@ target_dir="part1"
 
 [files.part1.actions.action1]
 action="get_file"
-source="ftp://raw.githubusercontent.com/openzim/hatch-openzim/refs/heads/main/tests/data/testset1.zip"
+source="ftp://dev.kiwix.org/hatch-openzim/testset1.zip"
 target_file="file1.zip"
