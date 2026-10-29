@@ -37,16 +37,16 @@ scripts = [
   "invoke==3.0.3",
 ]
 qa = [
-  "ruff==0.16.6",
-  "pyright==1.1.411",
+  "ruff==0.17.3",
+  "pyright==1.1.414",
 ]
 test = [
-  "pytest==9.1.1",
-  "coverage==7.16.0",
+  "pytest==9.2.0",
+  "coverage==7.17.0",
 ]
 dev = [
-  "pre-commit==4.6.2",
-  "debugpy==1.8.21",
+  "pre-commit==4.7.0",
+  "debugpy==1.8.22",
   "hatch-openzim[scripts]",
   "hatch-openzim[qa]",
   "hatch-openzim[test]",
