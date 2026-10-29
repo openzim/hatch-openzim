@@ -4,13 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hatch-openzim"
-requires-python = ">=3.10,<3.15"
+requires-python = ">=3.11,<3.16"
 description = "openZIM hatch plugin to set metadata automatically and download files at build time"
 readme = "README.md"
 dependencies = [
   "hatchling>=1.27.0,<2",
   "packaging>=24.2,<27",
-  "toml>=0.10", # to be removed once only 3.11 and above is supported
 ]
 authors = [
   { "name" = "openZIM", "email" = "dev@openzim.org"},
@@ -20,11 +19,11 @@ license = {text = "GPL-3.0-or-later"}
 classifiers = [
     "Framework :: Hatch",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
 ]
 dynamic = ["version"]
@@ -74,7 +73,7 @@ features = ["dev"]
 features = ["scripts", "test"]
 
 [[tool.hatch.envs.test.matrix]]
-python = ["3.10", "3.11", "3.12", "3.13", "3.14"]
+python = ["3.11", "3.12", "3.13", "3.14", "3.15"]
 
 [tool.hatch.envs.test.scripts]
 run = "inv test --args '{args}'"
@@ -98,7 +97,7 @@ fix-lint = "inv fix-lint --args '{args}'"
 fix-all = "inv fix-all --args '{args}'"
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 88
 src = ["src"]
 
@@ -224,6 +223,6 @@ exclude_lines = [
 include = ["src", "tests", "tasks.py"]
 exclude = [".env/**", ".venv/**"]
 extraPaths = ["src"]
-pythonVersion = "3.10"
+pythonVersion = "3.11"
 typeCheckingMode="strict"
 disableBytesTypePromotions = true

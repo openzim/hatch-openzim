@@ -1,15 +1,11 @@
 import shutil
 import subprocess
 import tempfile
+import tomllib
 import zipfile
 from pathlib import Path
 from typing import Any
 from urllib.request import Request, urlopen
-
-try:
-    import tomllib  # pyright: ignore[reportMissingTypeStubs]
-except ImportError:  # pragma: no cover
-    import toml as tomllib
 
 from hatch_openzim.shared import logger
 
